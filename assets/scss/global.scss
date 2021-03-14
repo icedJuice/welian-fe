@@ -1,0 +1,32 @@
+// 覆盖PC分页样式
+body {
+  --safe-area-inset-bottom: 0px;
+  .el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #c00000;
+  }
+  .el-pagination.is-background .el-pager li:not(.disabled):hover {
+    color: #c00000;
+  }
+  min-height: 100vh;
+  &.disable-scroll {
+    overflow: hidden;
+  }
+  background-color: #f8f8f8;
+}
+
+@supports(width: constant(safe-area-inset-bottom)) {
+  body {
+    --safe-area-inset-bottom: constant(safe-area-inset-bottom);
+  }
+}
+@supports(width: env(safe-area-inset-bottom)) {
+  body {
+    --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+
+img[align] {
+  display: block;
+  margin: 10px auto;
+}

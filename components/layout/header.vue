@@ -1,0 +1,316 @@
+<template>
+    <div class="layout-header-container">
+        <div class="header-wrap">
+            <div class="header-inner">
+                <div class="left-side">
+                    <nuxt-link to="">
+                        <img class="logo" src="~/static/images/logo-blank.png" alt="">
+                    </nuxt-link>
+                    <div class="search-wrap">
+                        <div class="input-box">
+                            <input class="input-search" placeholder="中国人大14次大会" type="text">
+                        </div>
+                        <div class="search-btn">
+                            <img class="icon-search" src="~/assets/icon/icon-search.png" alt="">
+                            <span>搜索</span>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <div class="auth-wrap">
+                    <div class="login-info">
+                        <nuxt-link class="login" to="/login">登陆</nuxt-link>
+                        <i class="line"></i>
+                        <nuxt-link class="sign" to="/sign">注册</nuxt-link>
+                    </div>
+                    <div class="user-info">
+                        <nuxt-link class="user-name" to="/">小明小明小明小明小明</nuxt-link>
+                        <i class="line"></i>
+                        <nuxt-link class="exit" to="exit">退出</nuxt-link>
+                    </div>
+                </div>
+                <div class="nav-wrap" :class="{'open': open}">
+                    <i class="mask"></i>
+                    <div class="btn" @click="toggleNav"></div>
+                    <div class="nav-list">
+                        <div class="nav-list-inner">
+                            <nuxt-link  to="/" class="nav-item">
+                                <i class="icon icon-back-home"></i>
+                                <span>返回首页</span>
+                            </nuxt-link>
+                            <nuxt-link to="/login" class="nav-item">
+                                <i class="icon icon-login"></i>
+                                <span>登陆注册</span>
+                            </nuxt-link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+  name: 'layout-header',
+
+  data() {
+      return {
+          open: false,
+      }
+  },
+
+    mounted() {
+        if (window) {
+            window.addEventListener('resize', this.listenWidth);
+        }
+        
+    },
+
+  methods: {
+      listenWidth() {
+      if (document.documentElement.clientWidth > 640 && this.open)  {
+        this.open = false;
+        document.body.classList.remove('disable-scroll');
+      }
+    },
+      toggleNav(event) {
+          event.stopPropagation();
+        event.preventDefault();
+        if (this.open) {
+            document.body.classList.remove('disable-scroll');
+        } else {
+            document.body.classList.add('disable-scroll');
+        }
+        this.open = !this.open;
+      },
+
+      closeNav() {
+          this.navOpen = false;
+      }
+  }
+};
+</script>
+
+<style lang="scss">
+.layout-header-container {
+  position: relative;
+  z-index: 999;
+  width: 100%;
+  --height: 70px;
+  --padding: 40px;
+  height: var(--height);
+
+  .header-wrap {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: var(--height);
+    background: linear-gradient(180deg, #12d36f 0%, #07c160 100%);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 var(--padding);
+  }
+  .left-side {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  .logo {
+    display: block;
+    height: 18px;
+    width: auto;
+  }
+  .search-wrap {
+    display: flex;
+    margin-left: var(--padding);
+    height: 28px;
+    width: 40%;
+    max-width: 368px;
+    .input-box {
+      flex-grow: 1;
+      display: flex;
+      background-color: #fff;
+      padding: 0 10px;
+      border-radius: 4px 0px 0px 4px;
+    }
+    .input-search {
+      flex-grow: 1;
+      font-size: 12px;
+      flex-grow: 1;
+      color: #bbbbbb;
+    }
+    .search-btn {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      width: 68px;
+      height: 28px;
+      background: #169452;
+      border-radius: 0px 4px 4px 0px;
+      font-size: 14px;
+      color: #fff;
+    }
+    .icon-search {
+      display: block;
+      width: 14px;
+      height: 14px;
+      margin-right: 4px;
+    }
+  }
+
+  .auth-wrap {
+    color: #fff;
+    flex-shrink: 0;
+    flex-grow: 0;
+    .line {
+      width: 2px;
+      height: 12px;
+      background-color: #fff;
+    }
+    .user-name {
+      flex-grow: 0;
+      max-width: 120px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: break-all;
+    }
+    a {
+      display: inline-block;
+      padding: 0 10px;
+    }
+  }
+  .login-info,
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+
+
+  .nav-wrap {
+      display: none;
+      user-select: none;
+      .mask {
+          display: none;
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+      }
+      .btn {
+          position: relative;
+          width: 22px;
+          height: 22px;
+          background-size: 20px 18px;
+          background-repeat: no-repeat;
+          background-position: center center;
+          background-image: url('~assets/icon/icon-sheet.png');
+      }
+      
+      .nav-list {
+          display: none;
+          position: absolute;
+          width: 100%;
+          height: calc(100vh - var(--height));
+          left: 0;
+          top: var(--height);
+          overflow: hidden;
+          background-color: rgba(0, 0, 0, 0.6);
+      }
+
+      .nav-list-inner {
+          position: relative;
+          padding: 10px 24px;
+          background-color: #fff;
+      }
+
+      &.open {
+          .btn {
+              background-image: url('~assets/icon/icon-close.png');
+          }
+          .nav-list {
+              display: block;
+          }
+          .mask {
+              display: block;
+          }
+      }
+    
+    .nav-item {
+        padding: 10px 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: #333;
+        display: flex;
+        align-items: center;
+    }
+    .icon {
+        display: block;
+        width: 16px;
+        height: 16px;
+        margin-right: 10px;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+    .icon-back-home {
+        background-image: url('~assets/icon/icon-main.png');
+    }
+    .icon-login {
+        background-image: url('~assets/icon/icon-main.png');
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .layout-header-container {
+    --height: 60px;
+    --padding: 16px;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .layout-header-container {
+    --height: 60px;
+    --padding: 16px;
+    .left-side {
+      justify-content: space-between;
+      padding-right: 20px;
+    }
+    
+    .search-wrap {
+      width: unset;
+      .input-box {
+        display: none;
+      }
+      .search-btn {
+          display: flex;
+          padding: 0 6px;
+          justify-content: space-between;
+        width: 58px;
+        height: 24px;
+        border-radius: 12px;
+        border: 1px solid rgba(#fff, 0.6);
+        background-color: transparent;
+        font-size: 14px;
+      }
+    }
+    .auth-wrap {
+        display: none;
+    }
+    .nav-wrap {
+        display: block;
+    }
+  }
+}
+</style>
