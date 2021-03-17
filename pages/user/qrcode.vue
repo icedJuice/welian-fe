@@ -1,56 +1,51 @@
 <template>
   <div class="user-sec-page qrcode-page">
-    <h1 class="page-title">二维码列表</h1>
-    <div class="page-body">
-      <div class="search-bar">
-        <div class="input-box">
-          <input class="input" type="text" />
-        </div>
-        <div class="btn btn-all">
-          <span>全部</span>
-        </div>
-        <div class="btn btn-select">
-          <span>查询</span>
-        </div>
+    <div class="search-bar">
+      <div class="input-box">
+        <input class="input" type="text" />
       </div>
+      <div class="btn btn-all">
+        <span>全部</span>
+      </div>
+      <div class="btn btn-select">
+        <span>查询</span>
+      </div>
+    </div>
 
-      <div class="lif-list">
-          <div class="card-item">
-              <div class="qrcode-box">
-                  <img class="qrcode-img" src="~static/images/qrcode.png" alt="">
+    <div class="lif-list">
+      <div class="card-item">
+        <div class="qrcode-box">
+          <img class="qrcode-img" src="~static/images/qrcode.png" alt="" />
+        </div>
+        <div class="qrcode-info">
+          <div class="info-box">
+            <div class="code-title">
+              <h2 class="title">微信视频号：达芬奇百科备份</h2>
+              <span class="status">审核通过</span>
+            </div>
+            <div class="code-view">
+              <div class="view-item">
+                <i class="icon icon-see"></i>
+                <span>2379</span>
               </div>
-              <div class="qrcode-info">
-                  <div class="info-box">
-                      <div class="code-title">
-                          <h2 class="title">微信视频号：达芬奇百科备份</h2>
-                          <span class="status">审核通过</span>
-                      </div>
-                      <div class="code-view">
-                          <div class="view-item">
-                              <i class="icon icon-see"></i>
-                              <span>2379</span>
-                          </div>
-                          <div class="view-item">
-                              <i class="icon icon-zan"></i>
-                              <span>786</span>
-                          </div>
-                          <div class="view-item">
-                              <span>编号10001</span>
-                          </div>
-                      </div>
-                      <div class="code-tag">
-                          <span class="tag-item">原创</span>
-                          <span class="tag-item">特别</span>
-                          <span class="tag-item">开心</span>
-                      </div>
-                  </div>
-                  <div class="func-box">
-                      <div class="func-btn">
-                          上架
-                      </div>
-                  </div>
+              <div class="view-item">
+                <i class="icon icon-zan"></i>
+                <span>786</span>
               </div>
+              <div class="view-item">
+                <span>编号10001</span>
+              </div>
+            </div>
+            <div class="code-tag">
+              <span class="tag-item">原创</span>
+              <span class="tag-item">特别</span>
+              <span class="tag-item">开心</span>
+            </div>
           </div>
+          <div class="func-box">
+            <div class="func-btn">上架</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -65,16 +60,7 @@ export default {
 .user-sec-page.qrcode-page {
   background-color: #fff;
   color: #333;
-  .page-title {
-    font-size: 16px;
-    line-height: 22px;
-    padding: 20px 20px 20px 43px;
-    border-bottom: 1px solid #eeeeee;
-  }
-  .page-body {
-    padding: 38px 0;
-    color: #333333;
-  }
+  padding: 40px 0;
   .search-bar {
     display: flex;
     margin: 0 60px 0 40px;
@@ -106,9 +92,9 @@ export default {
     width: 100%;
   }
   .btn {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 88px;
     height: 30px;
   }
@@ -118,71 +104,71 @@ export default {
     border-left: none;
   }
   .btn-select {
-      color: #fff;
-        height: 30px;
-        background: #07C160;
-        border: 1px solid #07C160;
-        border-left: none;
-        border-radius: 0px 4px 4px 0px;
+    color: #fff;
+    height: 30px;
+    background: #07c160;
+    border: 1px solid #07c160;
+    border-left: none;
+    border-radius: 0px 4px 4px 0px;
   }
 
   .lif-list {
-
   }
   .card-item {
+    display: flex;
+    padding: 24px 60px 24px 40px;
+    border-bottom: 1px solid #eeeeee;
+    .qrcode-box {
+      width: 115px;
+      height: 115px;
+      flex-shrink: 0;
+      margin-right: 24px;
+    }
+    .qrcode-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .qrcode-info {
       display: flex;
-      padding: 24px 60px 24px 40px;
-      border-bottom: 1px solid #EEEEEE;
-      .qrcode-box {
-          width: 115px;
-          height: 115px;
-          flex-shrink: 0;
-          margin-right: 24px;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+    .info-box,
+    .func-box {
+      align-self: stretch;
+    }
+    .info-box {
+      flex-grow: 1;
+    }
+    .func-box {
+      flex-grow: 0;
+      flex-shrink: 0;
+    }
+    .code-title {
+      display: flex;
+      align-items: center;
+      .title {
+        max-width: 70%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 16px;
+        line-height: 22px;
+        font-weight: 500;
       }
-      .qrcode-img {
-          display: block;
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
+      .status {
+        display: block;
+        font-size: 10px;
+        padding: 1px 4px;
+        margin-left: 8px;
+        text-align: center;
+        border-radius: 1px;
+        border: 1px solid #07c160;
+        color: #07c160;
       }
-      .qrcode-info {
-          display: flex;
-          flex-grow: 1;
-          justify-content: space-between;
-      }
-      .info-box, .func-box{
-          align-self: stretch;
-      }
-      .info-box {
-          flex-grow: 1;
-      }
-      .func-box {
-          flex-grow: 0;
-          flex-shrink: 0;
-      }
-      .code-title {
-          display: flex;
-          align-items: center;
-          .title {
-              max-width: 70%;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              font-size: 16px;
-              line-height: 22px;
-              font-weight: 500;
-          }
-          .status {
-              display: block;
-            font-size: 10px;
-            padding: 1px 4px;
-            margin-left: 8px;
-            text-align: center;
-            border-radius: 1px;
-            border: 1px solid #07C160;
-            color: #07C160;
-          }
-      }
+    }
   }
 }
 </style>

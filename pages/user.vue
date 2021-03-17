@@ -9,8 +9,10 @@
             :key="route.path"
             :to="route.path"
             class="nav-item"
-            :class="{'active': route.path === currentRoute}"
-          > {{route.name}} </nuxt-link>
+            :class="{ active: route.path === currentRoute.path }"
+          >
+            {{ route.name }}
+          </nuxt-link>
         </div>
       </div>
 
@@ -19,6 +21,7 @@
       </div>
     </div>
     <div class="right-side">
+      <h1 class="page-title">{{ currentRoute.name || '个人中心' }}</h1>
       <nuxt-child></nuxt-child>
     </div>
   </div>
@@ -30,19 +33,19 @@ import adsSwiper from '~/components/ads-swiper';
 const routes = [
   {
     name: '个人资料',
-    path: '/user',
+    path: '/user'
   },
   {
     name: '发布二维码',
-    path: '/user/publish',
+    path: '/user/publish'
   },
   {
     name: '二维码列表',
-    path: '/user/qrcode',
+    path: '/user/qrcode'
   },
   {
     name: '审核推荐',
-    path: '/user/adds',
+    path: '/user/adds'
   }
 ];
 
@@ -52,8 +55,8 @@ export default {
   data() {
     return {
       routes,
-      currentRoute: '',
-    }
+      currentRoute: ''
+    };
   },
 
   fetch({ state, route: { path } }) {
@@ -70,19 +73,22 @@ export default {
 
   mounted() {
     if (window) {
-      this.currentRoute = window.location.pathname
+      const pathname = window.location.pathname;
+      this.setCurrentPath(pathname);
     }
   },
 
   watch: {
     $route(route) {
-      this.currentRoute = route.path;
+      this.currentRoute = route;
+      this.setCurrentPath(route.path);
     }
   },
 
   methods: {
     setCurrentPath(path) {
-      this.currentRoute = path;
+      const route = this.routes.find(route => route.path == path);
+      this.currentRoute = route || {name: '个人中心'};
     }
   },
 
@@ -106,32 +112,40 @@ export default {
   margin-right: 20px;
 }
 .user-nav {
-    color: #333;
-    background-color: #fff;
-    padding-bottom: 60px;
-    margin-bottom: 20px;
+  color: #333;
+  background-color: #fff;
+  padding-bottom: 60px;
+  margin-bottom: 20px;
 }
 .page-title {
-    padding: 20px 30px;
-    font-size: 16px;
-    font-weight: 500;
-    border-bottom: 1px solid #EEEEEE;
+  padding: 20px 30px;
+  font-size: 16px;
+  font-weight: 500;
+  border-bottom: 1px solid #eeeeee;
 }
 .nav-item {
-    display: block;
-    padding: 14px 30px;
-    font-size: 12px;
-    line-height: 17px;
-    background-color: #fff;
-    transition: all .2s ease;
-    &:hover,
-    &.active {
-        background: #07C160;
-        color: #fff;
-    }
+  display: block;
+  padding: 14px 30px;
+  font-size: 12px;
+  line-height: 17px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  &:hover,
+  &.active {
+    background: #07c160;
+    color: #fff;
+  }
 }
 .right-side {
   flex-shrink: 1;
   flex-grow: 1;
+  background-color: #fff;
+}
+.page-title {
+  color: #333;
+  font-size: 16px;
+  line-height: 22px;
+  padding: 20px 20px 20px 43px;
+  border-bottom: 1px solid #eeeeee;
 }
 </style>

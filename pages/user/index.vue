@@ -1,22 +1,19 @@
 <template>
-  <div class="user-sec-page">
-    <h1 class="page-title">个人资料</h1>
-    <div class="page-body">
-      <div class="form">
-        <div class="form-item">
-          <span class="form-item-label">邮箱</span>
-          <el-input type="text" size="medium" v-model="email" autocomplete="off"></el-input>
-        </div>
-        <div class="form-item">
-          <span class="form-item-label">昵称</span>
-          <el-input type="text" size="medium" v-model="nick" autocomplete="off"></el-input>
-        </div>
+  <div class="user-sec-page user-info-page">
+    <div class="form">
+      <div class="form-item">
+        <span class="form-item-label">邮箱</span>
+        <el-input type="text" size="medium" v-model="email" autocomplete="off"></el-input>
       </div>
+      <div class="form-item">
+        <span class="form-item-label">昵称</span>
+        <el-input type="text" size="medium" v-model="nick" autocomplete="off"></el-input>
+      </div>
+    </div>
 
-      <div class="btn-group">
-        <div class="save-btn">
-          <span>保存</span>
-        </div>
+    <div class="btn-group">
+      <div class="save-btn">
+        <span>保存</span>
       </div>
     </div>
   </div>
@@ -50,19 +47,9 @@ export default {
 </script>
 
 <style lang="scss">
-.user-sec-page {
-  background-color: #fff;
+.user-sec-page.user-info-page {
+  padding: 40px 60px 40px 40px;
   color: #333;
-  .page-title {
-    font-size: 16px;
-    line-height: 22px;
-    padding: 20px 20px 20px 43px;
-    border-bottom: 1px solid #eeeeee;
-  }
-  .page-body {
-    padding: 38px 40px;
-    color: #333333;
-  }
   .form-item {
     display: flex;
     margin-top: 24px;
@@ -88,10 +75,10 @@ export default {
     margin: 20px 20px 40px 50px;
   }
   .save-btn {
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 76px;
     height: 28px;
     background: #07c160;

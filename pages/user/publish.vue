@@ -1,7 +1,6 @@
 <template>
-    <div>
-        gerenzhongxin -publish
-
+    <div class="user-sec-page publish-page">
+        
     </div>
 </template>
 
@@ -10,3 +9,7 @@ export default {
     name: 'user-publish',
 }
 </script>
+
+<style lang="scss" scoped>
+
+</style>
