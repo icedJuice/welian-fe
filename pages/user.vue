@@ -139,7 +139,6 @@ export default {
 .right-side {
   flex-shrink: 1;
   flex-grow: 1;
-  background-color: #fff;
 }
 .page-title {
   color: #333;
@@ -147,5 +146,6 @@ export default {
   line-height: 22px;
   padding: 20px 20px 20px 43px;
   border-bottom: 1px solid #eeeeee;
+  background-color: #fff;
 }
 </style>
