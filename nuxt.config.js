@@ -105,7 +105,7 @@ module.exports = {
     }
   ],
   router: {
-    middleware: ['layout'],
+    middleware: ['layout', 'axiosMiddle'],
     linkActiveClass: 'link-active'
   },
 
@@ -136,7 +136,7 @@ module.exports = {
       changeOrigin: true,
       ws: false,
       pathRewrite: {
-        '^/api': ''
+        // '^/api': ''
       }
     }
   },

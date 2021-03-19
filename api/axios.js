@@ -7,7 +7,12 @@ const ax = axios.create({
   baseURL: API_ROOT
 });
 
-const base = '/';
+const headers = {
+  'access-control-allow-methods': 'GET, POST, OPTIONS, PUT, DELETE',
+  'access-control-allow-origin': '*',
+};
+
+const base = '/api/v1';
 
 // 拦截器
 ax.interceptors.request.use(
@@ -44,14 +49,16 @@ ax.interceptors.response.use(
 
 export const GET = path => params =>
   ax
-    .get(base + path + '.do', { params })
+    .get(base + path, { params }, {headers})
     .then(res => res.data.data)
     .catch(() => null);
 
 export const POST = path => data =>
   ax
-    .post(base + path + '.do', data)
+    .post(base + path, data, {headers})
     .then(res => res.data.data)
     .catch(() => null);
 
 export default ax;
+
+

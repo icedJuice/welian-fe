@@ -89,17 +89,32 @@
           </h2>
           <div class="form-inner">
             <div class="input-box">
-              <el-input placeholder="邮箱" v-model="login_email" size="medium"></el-input>
-              <p class="err-tip">请输入正确的邮箱</p>
+              <el-input
+                placeholder="邮箱"
+                v-model="login_email"
+                size="medium"
+                @blur="onLoginEmailBlur"
+              ></el-input>
+              <p class="err-tip" v-show="login_email_err">请输入正确的邮箱</p>
             </div>
             <div class="input-box">
-              <el-input placeholder="密码" v-model="login_pw" size="medium" show-password></el-input>
-              <p class="err-tip">请输入密码</p>
+              <el-input
+                placeholder="密码"
+                v-model="login_pw"
+                size="medium"
+                show-password
+                @blur="onLoginPwBlur"
+              ></el-input>
+              <p class="err-tip" v-show="login_pw_err">请输入密码</p>
             </div>
 
             <nuxt-link class="color-green forgot-btn" to="/forgot">忘记密码</nuxt-link>
 
-            <div class="submit-btn disable">
+            <div
+              class="submit-btn"
+              :class="{'disable': !login_email || login_email_err || !login_pw || login_pw_err}"
+              @click="signIn"
+            >
               <span>登陆</span>
             </div>
 
@@ -115,6 +130,9 @@
 </template>
 
 <script>
+
+const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+
 export default {
   name: 'session',
   scrollToTop: true,
@@ -128,8 +146,10 @@ export default {
       isSign: false,
       ani: false,
       login_email: '',
+      login_email_err: false,
       login_nick: '',
       login_pw: '',
+      login_pw_err: false,
       login_ident: ''
     };
   },
@@ -152,6 +172,13 @@ export default {
 
   mounted() {},
 
+  watch: {
+    // login_email(res) {
+    //   const isRight = emailReg.test(res);
+    //   this.login_email_err = res && !isRight
+    // }
+  },
+
   methods: {
     changeModeLogin() {
       this.isSign = false;
@@ -160,6 +187,27 @@ export default {
     changeModeSignin() {
       this.isSign = true;
       this.ani = true;
+    },
+    onLoginEmailBlur() {
+      this.login_email_err = !emailReg.test(this.login_email);
+    },
+    onLoginPwBlur() {
+      this.login_pw_err = !this.login_pw || !this.login_pw.trim();
+    },
+
+    signIn() { // 登陆
+      if (!this.login_email || this.login_email_err || !this.login_pw || this.login_pw_err) {
+        return;
+      }
+      const payload = {
+        email: this.login_email,
+        password: this.login_pw,
+      };
+      this.$store.dispatch('global/signIn', payload);
+    },
+    signUp() { // 注册
+      const payload = {};
+      this.$store.dispatch('global/signUp', payload);
     }
   },
 
@@ -291,6 +339,7 @@ export default {
       padding-left: 30px;
       transform: scale(0.5, 0.5);
       color: #ff5f5f;
+      animation: fadeIn .2s both;
     }
     &.error .el-input {
       .el-input__inner {
@@ -488,6 +537,15 @@ export default {
         display: none;
       }
     }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
 </style>

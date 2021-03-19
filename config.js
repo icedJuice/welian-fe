@@ -1,6 +1,6 @@
 const IS_DEV = process.env.NODE_ENV === 'development';
 
-const API_ROOT = 'http://api.host.com';
+const API_ROOT = 'http://47.94.250.18:5000';
 
 const BASE_PORT = 8088;
 
