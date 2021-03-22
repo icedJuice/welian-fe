@@ -1,15 +1,15 @@
 import querystring from 'querystring';
-import { API_ROOT } from '../config';
+import { BASE_PORT } from '../config';
 
 import axios from 'axios';
 
 const ax = axios.create({
-  baseURL: API_ROOT
+  baseURL: 'http://localhost:' + BASE_PORT,
 });
 
 const headers = {
-  'access-control-allow-methods': 'GET, POST, OPTIONS, PUT, DELETE',
-  'access-control-allow-origin': '*',
+  'Access-Control-Allow-Origin': '*',
+  'Content-Type' :'application/json:charset=UtF-8',
 };
 
 const base = '/api/v1';
@@ -17,9 +17,10 @@ const base = '/api/v1';
 // 拦截器
 ax.interceptors.request.use(
   data => {
-    if (data.method === 'post' || data.method === 'put' || data.method === 'delete' || data.method === 'patch') {
-      data.data = querystring.stringify(data.data);
-    }
+    // if (data.method === 'post' || data.method === 'put' || data.method === 'delete' || data.method === 'patch') {
+    //   console.log(data.data);
+    //   data.data = querystring.stringify(data.data);
+    // }
     return data;
   },
   error => {
@@ -50,14 +51,15 @@ ax.interceptors.response.use(
 export const GET = path => params =>
   ax
     .get(base + path, { params }, {headers})
-    .then(res => res.data.data)
+    .then(res => res.data)
     .catch(() => null);
 
-export const POST = path => data =>
-  ax
+export const POST = path => data => {
+  return ax
     .post(base + path, data, {headers})
-    .then(res => res.data.data)
+    .then(res => res.data)
     .catch(() => null);
+}
 
 export default ax;
 

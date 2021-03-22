@@ -2,23 +2,23 @@ import axios from 'axios'
 
 import md5 from 'js-md5'
 
-import cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 
 export default function({req,res}) {
+  console.log('req');
+//  if (req.headers !== undefined) {
 
- if (req.headers !== undefined) {
+//     let cookieArr = req.headers.cookie;
 
-    let cookieArr = req.headers.cookie;
+//     const token = getCookie('token', cookieArr)
 
-    const token = getCookie('token', cookieArr)
+//     //设置axios的全局变量.
 
-    //设置axios的全局变量.
+//     axios.defaults.timeout = 60000 // 响应时间
 
-    axios.defaults.timeout = 60000 // 响应时间
+//     axios.defaults.headers.token = token;
 
-    axios.defaults.headers.token = token;
-
-  }
+//   }
 }
 
 //解析浏览器中的cookies

@@ -19,29 +19,61 @@
             <nuxt-link class="link-main" to="/">返回微链接</nuxt-link>
           </h2>
           <div class="form-inner">
-            <div class="input-box">
-              <el-input placeholder="邮箱" v-model="login_email" size="medium"></el-input>
-              <p class="err-tip">请输入正确的邮箱</p>
+            <div class="input-box" :class="{error: sign_email_err}">
+              <el-input pl
+                placeholder="邮箱"
+                v-model="sign_email"
+                size="medium"
+                @input="() => onIptChange('sign_email')"
+                @blur="() => {onIptBlur('sign_email')}"
+                @focus="() => {onIptFocus('sign_email')}"
+              ></el-input>
+              <p class="err-tip" v-if="sign_email_err">请输入正确的邮箱</p>
             </div>
-            <div class="input-box error">
-              <el-input placeholder="昵称" v-model="login_nick" size="medium"></el-input>
-              <p class="err-tip">请输入昵称</p>
+            <div class="input-box" :class="{error: sign_nick_err}">
+              <el-input
+                placeholder="昵称"
+                v-model="sign_nick"
+                size="medium"
+                @input="() => onIptChange('sign_nick')"
+                @blur="() => {onIptBlur('sign_nick')}"
+                @focus="() => {onIptFocus('sign_nick')}"
+              ></el-input>
+              <p class="err-tip" v-if="sign_nick_err">请输入昵称</p>
             </div>
-            <div class="input-box">
-              <el-input placeholder="密码" v-model="login_pw" size="medium" show-password></el-input>
-              <p class="err-tip">请输入密码</p>
+            <div class="input-box" :class="{error: sign_pw_err}">
+              <el-input
+                placeholder="密码"
+                v-model="sign_pw"
+                size="medium"
+                show-password
+                @input="() => onIptChange('sign_pw')"
+                @blur="() => {onIptBlur('sign_pw')}"
+                @focus="() => {onIptFocus('sign_pw')}"
+              ></el-input>
+              <p class="err-tip" v-if="sign_pw_err">请输入密码</p>
             </div>
-            <div class="input-box verification">
-              <el-input placeholder="验证码" v-model="login_ident" size="medium"></el-input>
+            <div class="input-box verification" :class="{error: sign_ident_err}">
+              <el-input
+                placeholder="验证码"
+                v-model="sign_ident"
+                size="medium"
+                @input="() => onIptChange('sign_ident')"
+                @blur="() => {onIptBlur('sign_ident')}"
+                @focus="() => {onIptFocus('sign_ident')}"
+              ></el-input>
               <div class="verification-box">
-                <span>1456</span>
-                <span>缓一缓</span>
+                <span class="capt-box"><img class="capt-img" v-if="registerInfo && registerInfo.captchaImage " :src="'data:image/png;base64,' + registerInfo.captchaImage" alt="验证码"></span>
+                <span class="capt-btn" @click="getRegisterInfo"><span>换一换</span></span>
               </div>
-              <p class="err-tip">请输入验证码</p>
+              <p class="err-tip" v-if="sign_ident_err">请输入验证码</p>
             </div>
 
             <p class="frag-wrap wap">
-              <i class="select-flag active"></i>
+              <i class="select-flag"
+                :class="{active: sign_agreement}"
+                @click="toggleAgreement"
+              ></i>
               <span>
                 我已阅读并接受
                 <nuxt-link class="color-green" to="/1">用户协议</nuxt-link>
@@ -50,12 +82,20 @@
               </span>
             </p>
 
-            <div class="submit-btn disable">
+            <div
+              class="submit-btn"
+              :class="{disable: !signMsgOk}"
+              @click="signUp"
+            >
               <span>注册</span>
             </div>
 
             <p class="frag-wrap web">
-              <i class="select-flag active"></i>
+              <i
+                class="select-flag"
+                :class="{active: sign_agreement}"
+                @click="toggleAgreement"
+              ></i>
               <span>
                 我已阅读并接受
                 <nuxt-link class="color-green" to="/1">用户协议</nuxt-link>
@@ -88,27 +128,32 @@
             <nuxt-link class="link-main" to="/">返回微链接</nuxt-link>
           </h2>
           <div class="form-inner">
-            <div class="input-box">
+            <div class="input-box" :class="{error: login_email_err}">
               <el-input
                 placeholder="邮箱"
                 v-model="login_email"
                 size="medium"
-                @blur="onLoginEmailBlur"
+                @input="() => onIptChange('login_email')"
+                @blur="() => {onIptBlur('login_email')}"
+                @focus="() => {onIptFocus('login_email')}"
               ></el-input>
               <p class="err-tip" v-show="login_email_err">请输入正确的邮箱</p>
             </div>
-            <div class="input-box">
+            <div class="input-box" :class="{error: login_pw_err}">
               <el-input
                 placeholder="密码"
                 v-model="login_pw"
                 size="medium"
                 show-password
-                @blur="onLoginPwBlur"
+                @input="() => onIptChange('login_pw')"
+                @blur="() => {onIptBlur('login_pw')}"
+                @focus="() => {onIptFocus('login_pw')}"
               ></el-input>
               <p class="err-tip" v-show="login_pw_err">请输入密码</p>
             </div>
 
-            <nuxt-link class="color-green forgot-btn" to="/forgot">忘记密码</nuxt-link>
+            <!-- <nuxt-link class="color-green forgot-btn" to="/forgot">忘记密码</nuxt-link> -->
+            <span class="color-green forgot-btn">忘记密码</span>
 
             <div
               class="submit-btn"
@@ -130,8 +175,19 @@
 </template>
 
 <script>
-
 const emailReg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+
+const rules = {
+  login_email: p => emailReg.test(p),
+  login_pw: p => Boolean(p && p.length >= 6),
+  sign_email: p => emailReg.test(p),
+  sign_nick: p => Boolean(p && p.length),
+  sign_pw: p => Boolean(p && p.length >= 6),
+  sign_ident: p => Boolean(p && p.length === 4),
+};
+
+// 不能变， 变了就挟菜
+const hashPw = (pw) => pw;
 
 export default {
   name: 'session',
@@ -145,12 +201,26 @@ export default {
     return {
       isSign: false,
       ani: false,
+      
+      // 登陆
       login_email: '',
       login_email_err: false,
-      login_nick: '',
       login_pw: '',
       login_pw_err: false,
-      login_ident: ''
+
+      // 注册
+      sign_email: '',
+      sign_email_err: '',
+      sign_nick: '',
+      sign_nick_err: '',
+      sign_pw: '',
+      sign_pw_err: '',
+      sign_ident: '',
+      sign_ident_err: '',
+      sign_agreement: false,
+
+      agreeTimer: null,
+      agreeChanging: false,
     };
   },
 
@@ -170,7 +240,12 @@ export default {
     });
   },
 
-  mounted() {},
+  mounted() {
+    // console.log(this.$router.replace('/'));
+  },
+
+  beforeDestroy() {
+  },
 
   watch: {
     // login_email(res) {
@@ -187,33 +262,94 @@ export default {
     changeModeSignin() {
       this.isSign = true;
       this.ani = true;
+      this.getRegisterInfo();
     },
-    onLoginEmailBlur() {
-      this.login_email_err = !emailReg.test(this.login_email);
+    onIptChange(type) {
+      const rule = rules[type];
+      const string = (this[type] || '').trim();
+      const pass = rule(string);
+      this[type + '_err'] = !pass;
+      
     },
-    onLoginPwBlur() {
-      this.login_pw_err = !this.login_pw || !this.login_pw.trim();
+    onIptBlur(type) {
+      this.onIptChange(type);
     },
-
+    onIptFocus() {
+    },
+    toggleAgreement() {
+      this.sign_agreement = !this.sign_agreement;
+    },
     signIn() { // 登陆
       if (!this.login_email || this.login_email_err || !this.login_pw || this.login_pw_err) {
         return;
       }
       const payload = {
         email: this.login_email,
-        password: this.login_pw,
+        password: hashPw(this.login_pw),
       };
-      this.$store.dispatch('global/signIn', payload);
+      this.$store.dispatch('global/signIn', payload).then((res) => {
+        this.$message({
+          message: '登陆成功',
+          type: 'success'
+        });
+        this.$router.replace('/');
+      }).catch((error) => {
+        this.$message({
+          message: error && error.message || '登录异常',
+          type: 'error'
+        });
+      });
     },
     signUp() { // 注册
-      const payload = {};
-      this.$store.dispatch('global/signUp', payload);
+      if ( !this.signMsgOk) {
+        return;
+      }
+      const payload = {
+        requestId: this.registerInfo?.requestId,
+        email: this.sign_email,
+        nickName: this.sign_nick,
+        password: hashPw(this.sign_pw),
+        captchaCode: (this.sign_ident || '').toUpperCase(),
+      };
+      this.$store.dispatch('global/signUp', payload).then(() => {
+        // 注册成功
+        this.$route
+      }).catch((error) => {
+        this.$message({
+          type: 'error',
+          message: error.message || '注册失败, 请重试'
+        });
+      });
+    },
+
+    getRegisterInfo(forceUpdate) {
+      if (this.agreeChanging) {
+        return;
+      }
+      this.agreeChanging = true;
+      this.$store.dispatch('global/getRegisterInfo', forceUpdate);
+      this.agreeTimer = setTimeout(() => {
+        this.agreeChanging = false;
+      }, 1000)
+    },
+    backPage() {
+      const refer = window.location.search
     }
   },
 
   computed: {
-    lawyerData() {
-      return this.$store.state.global.mainLawyerData;
+    signMsgOk() {
+      console.log(!(!this.sign_email || this.sign_email_err || 
+          !this.sign_nick || this.sign_nick_err ||
+          !this.sign_pw || this.sign_pw_err ||
+          !this.sign_ident || this.sign_ident_err) && this.sign_agreement);
+      return !(!this.sign_email || this.sign_email_err || 
+          !this.sign_nick || this.sign_nick_err ||
+          !this.sign_pw || this.sign_pw_err ||
+          !this.sign_ident || this.sign_ident_err) && this.sign_agreement;
+    },
+    registerInfo() {
+      return this.$store.state.global.registerInfo || {};
     },
     mobileLayout() {
       return this.$store.state.options.mobileLayout;
@@ -379,6 +515,27 @@ export default {
     top: 0;
     display: flex;
     align-items: center;
+    .capt-box {
+      display: block;
+      width: 60px;
+      height: 28px;
+      background-color: #eee;
+    }
+    .capt-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .capt-btn {
+      display: flex;
+      align-items: center;
+      padding: 0 10px 0 4px;
+      height: 28px;
+      font-size: 12px;
+      color: #07C160;
+      cursor: pointer;
+      user-select: none;
+    }
   }
   .submit-btn {
     height: 36px;
@@ -391,6 +548,7 @@ export default {
     border-radius: 4px;
     color: #fff;
     font-size: 14px;
+    cursor: pointer;
     &.disable {
       opacity: 0.4;
     }

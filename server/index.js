@@ -7,6 +7,7 @@ const app = new Koa();
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js');
 config.dev = app.env === 'development';
+
 async function start() {
   // Instantiate nuxt.js
   const nuxt = new Nuxt(config);

@@ -1,54 +1,58 @@
 <template>
-    <div class="layout-header-container">
-        <div class="header-wrap">
-            <div class="header-inner">
-                <div class="left-side">
-                    <nuxt-link to="">
-                        <img class="logo" src="~/static/images/logo-blank.png" alt="">
-                    </nuxt-link>
-                    <div class="search-wrap">
-                        <div class="input-box">
-                            <input class="input-search" placeholder="中国人大14次大会" type="text">
-                        </div>
-                        <div class="search-btn">
-                            <img class="icon-search" src="~/assets/icon/icon-search.png" alt="">
-                            <span>搜索</span>
-                        </div>
-                    </div>
-                </div>
-                
-
-                <div class="auth-wrap">
-                    <div class="login-info">
-                        <nuxt-link class="login" to="/login">登陆</nuxt-link>
-                        <i class="line"></i>
-                        <nuxt-link class="sign" to="/sign">注册</nuxt-link>
-                    </div>
-                    <div class="user-info">
-                        <nuxt-link class="user-name" to="/">小明小明小明小明小明</nuxt-link>
-                        <i class="line"></i>
-                        <nuxt-link class="exit" to="exit">退出</nuxt-link>
-                    </div>
-                </div>
-                <div class="nav-wrap" :class="{'open': open}">
-                    <i class="mask"></i>
-                    <div class="btn" @click="toggleNav"></div>
-                    <div class="nav-list">
-                        <div class="nav-list-inner">
-                            <nuxt-link  to="/" class="nav-item">
-                                <i class="icon icon-back-home"></i>
-                                <span>返回首页</span>
-                            </nuxt-link>
-                            <nuxt-link to="/login" class="nav-item">
-                                <i class="icon icon-login"></i>
-                                <span>登陆注册</span>
-                            </nuxt-link>
-                        </div>
-                    </div>
-                </div>
+  <div class="layout-header-container">
+    <div class="header-wrap">
+      <div class="header-inner">
+        <div class="left-side">
+          <nuxt-link to="">
+            <img class="logo" src="~/static/images/logo-blank.png" alt="" />
+          </nuxt-link>
+          <div class="search-wrap">
+            <div class="input-box">
+              <input class="input-search" placeholder="中国人大14次大会" type="text" />
             </div>
+            <div class="search-btn">
+              <img class="icon-search" src="~/assets/icon/icon-search.png" alt="" />
+              <span>搜索</span>
+            </div>
+          </div>
         </div>
+
+        <div class="auth-wrap">
+          <div class="user-info" v-if="userInfo">
+            <nuxt-link class="user-name" to="/user">{{ userInfo.nickName }}</nuxt-link>
+            <i class="line"></i>
+            <span class="exit" to="exit" @click="unAuthUser" >退出</span>
+          </div>
+
+          <div class="login-info" v-else>
+            <nuxt-link class="login" :to="`/session${pathname}`">登陆</nuxt-link>
+            <i class="line"></i>
+            <nuxt-link class="sign" :to="`/session${pathname}`">注册</nuxt-link>
+          </div>
+        </div>
+        <div class="nav-wrap" :class="{ open: open }">
+          <i class="mask"></i>
+          <div class="btn" @click="toggleNav"></div>
+          <div class="nav-list">
+            <div class="nav-list-inner">
+              <nuxt-link to="/" class="nav-item">
+                <i class="icon icon-back-home"></i>
+                <span>首页</span>
+              </nuxt-link>
+              <nuxt-link to="/session" class="nav-item" v-if="!userInfo">
+                <i class="icon icon-login"></i>
+                <span>登陆注册</span>
+              </nuxt-link>
+              <nuxt-link to="/user" class="nav-item" v-else>
+                <i class="icon icon-back-home"></i>
+                <span>个人中心</span>
+              </nuxt-link>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
@@ -56,39 +60,49 @@ export default {
   name: 'layout-header',
 
   data() {
-      return {
-          open: false,
-      }
+    return {
+      open: false,
+      pathname: ''
+    };
   },
 
-    mounted() {
-        if (window) {
-            window.addEventListener('resize', this.listenWidth);
-        }
-        
-    },
+  mounted() {
+    if (window) {
+      window.addEventListener('resize', this.listenWidth);
+    }
+  },
 
   methods: {
-      listenWidth() {
-      if (document.documentElement.clientWidth > 640 && this.open)  {
+    listenWidth() {
+      if (document.documentElement.clientWidth > 640 && this.open) {
         this.open = false;
         document.body.classList.remove('disable-scroll');
       }
     },
-      toggleNav(event) {
-          event.stopPropagation();
-        event.preventDefault();
-        if (this.open) {
-            document.body.classList.remove('disable-scroll');
-        } else {
-            document.body.classList.add('disable-scroll');
-        }
-        this.open = !this.open;
-      },
-
-      closeNav() {
-          this.navOpen = false;
+    toggleNav(event) {
+      event.stopPropagation();
+      event.preventDefault();
+      if (this.open) {
+        document.body.classList.remove('disable-scroll');
+      } else {
+        document.body.classList.add('disable-scroll');
       }
+      this.open = !this.open;
+    },
+
+    closeNav() {
+      this.navOpen = false;
+    },
+
+    unAuthUser() {
+      this.$store.dispatch('global/unAuthUser');
+      this.$router.replace('/');
+    }
+  },
+  computed: {
+    userInfo() {
+      return this.$store.state.global.userInfo;
+    }
   }
 };
 </script>
@@ -189,6 +203,12 @@ export default {
       display: inline-block;
       padding: 0 10px;
     }
+    .exit {
+      padding-left: 10px;
+    }
+    .sign {
+      padding-right: 0;
+    }
   }
   .login-info,
   .user-info {
@@ -196,79 +216,78 @@ export default {
     align-items: center;
   }
 
-
   .nav-wrap {
+    display: none;
+    user-select: none;
+    .mask {
       display: none;
-      user-select: none;
-      .mask {
-          display: none;
-          width: 100%;
-          height: 100%;
-          position: absolute;
-          left: 0;
-          top: 0;
-      }
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+    .btn {
+      position: relative;
+      width: 22px;
+      height: 22px;
+      background-size: 20px 18px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-image: url('~assets/icon/icon-sheet.png');
+    }
+
+    .nav-list {
+      display: none;
+      position: absolute;
+      width: 100%;
+      height: calc(100vh - var(--height));
+      left: 0;
+      top: var(--height);
+      overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.6);
+    }
+
+    .nav-list-inner {
+      position: relative;
+      padding: 10px 24px;
+      background-color: #fff;
+    }
+
+    &.open {
       .btn {
-          position: relative;
-          width: 22px;
-          height: 22px;
-          background-size: 20px 18px;
-          background-repeat: no-repeat;
-          background-position: center center;
-          background-image: url('~assets/icon/icon-sheet.png');
+        background-image: url('~assets/icon/icon-close.png');
       }
-      
       .nav-list {
-          display: none;
-          position: absolute;
-          width: 100%;
-          height: calc(100vh - var(--height));
-          left: 0;
-          top: var(--height);
-          overflow: hidden;
-          background-color: rgba(0, 0, 0, 0.6);
+        display: block;
       }
+      .mask {
+        display: block;
+      }
+    }
 
-      .nav-list-inner {
-          position: relative;
-          padding: 10px 24px;
-          background-color: #fff;
-      }
-
-      &.open {
-          .btn {
-              background-image: url('~assets/icon/icon-close.png');
-          }
-          .nav-list {
-              display: block;
-          }
-          .mask {
-              display: block;
-          }
-      }
-    
     .nav-item {
-        padding: 10px 0;
-        font-size: 12px;
-        font-weight: 500;
-        color: #333;
-        display: flex;
-        align-items: center;
+      padding: 10px 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: #333;
+      display: flex;
+      align-items: center;
     }
     .icon {
-        display: block;
-        width: 16px;
-        height: 16px;
-        margin-right: 10px;
-        background-size: cover;
-        background-position: center center;
-        background-repeat: no-repeat;
+      display: block;
+      width: 16px;
+      height: 16px;
+      margin-right: 10px;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
     }
     .icon-back-home {
-        background-image: url('~assets/icon/icon-main.png');
+      background-image: url('~assets/icon/icon-main.png');
     }
     .icon-login {
-        background-image: url('~assets/icon/icon-main.png');
+      background-image: url('~assets/icon/icon-main.png');
     }
   }
 }
@@ -287,16 +306,16 @@ export default {
       justify-content: space-between;
       padding-right: 20px;
     }
-    
+
     .search-wrap {
       width: unset;
       .input-box {
         display: none;
       }
       .search-btn {
-          display: flex;
-          padding: 0 6px;
-          justify-content: space-between;
+        display: flex;
+        padding: 0 6px;
+        justify-content: space-between;
         width: 58px;
         height: 24px;
         border-radius: 12px;
@@ -306,10 +325,10 @@ export default {
       }
     }
     .auth-wrap {
-        display: none;
+      display: none;
     }
     .nav-wrap {
-        display: block;
+      display: block;
     }
   }
 }

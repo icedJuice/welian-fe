@@ -59,15 +59,17 @@ export default {
     };
   },
 
-  fetch({ state, route: { path } }) {
+  fetch(props) {
+    const { store, redirect, route: { path } } = props;
+    console.log('path, ', path);
     return new Promise(r => {
-      r();
-      // Promise.all([
-      //   store.dispatch('options/getTDK', { path, id: 101 }),
-      // ]).then(([head]) => {
-      //   this.head = head;
-      //   r();
-      // }).catch(() => {r();});
+      Promise.all([
+        store.dispatch('global/getUserInfo'),
+      ]).then(r).catch((error) => {
+        console.log(error);
+        redirect(`/session?refer=${path}`);
+        r();
+      });
     });
   },
 

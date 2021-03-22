@@ -3,11 +3,11 @@
     <div class="form">
       <div class="form-item">
         <span class="form-item-label">邮箱</span>
-        <el-input type="text" size="medium" v-model="email" autocomplete="off"></el-input>
+        <el-input type="text" size="medium" :value="userInfo && userInfo.email" v-model="email" autocomplete="off"></el-input>
       </div>
       <div class="form-item">
         <span class="form-item-label">昵称</span>
-        <el-input type="text" size="medium" v-model="nick" autocomplete="off"></el-input>
+        <el-input type="text" size="medium" :value="userInfo && userInfo.nickName" v-model="nick" autocomplete="off"></el-input>
       </div>
     </div>
 
@@ -24,23 +24,19 @@ export default {
   name: 'user-index',
   data() {
     return {
-      email: 'abcekfjnwef@qq.com',
-      nick: '猪小明'
+      email: '',
+      nick: ''
     };
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert('submit!');
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+
+  },
+  computed: {
+    userInfo() {
+      const userInfo = this.$store.state.global.userInfo || {};
+      this.email = userInfo.email;
+      this.nick = userInfo.nickName;
+      return userInfo;
     }
   }
 };

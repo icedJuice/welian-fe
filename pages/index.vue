@@ -25,13 +25,10 @@ export default {
 
   fetch({ store, route: { path } }) {
     return new Promise(r => {
-      r();
-      // Promise.all([
-      //   store.dispatch('options/getTDK', { path, id: 101 }),
-      // ]).then(([head]) => {
-      //   this.head = head;
-      //   r();
-      // }).catch(() => {r();});
+      Promise.all([
+        store.dispatch('options/setLayoutPanel', {isLayoutPanel: true}),
+        store.dispatch('global/getUserInfo'),
+      ]).then(r).catch(r);
     });
   },
 

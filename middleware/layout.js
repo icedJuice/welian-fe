@@ -1,7 +1,12 @@
 export default function (params) {
   const { store, route, req } = params;
-// console.log(Object.keys(params));
-console.log(req.ctx.request.header.cookie);
+  const cookie = req && req.ctx && req.ctx.request && req.ctx.request.header.cookie;
+  if (/WeLian/.test(cookie)) {
+    console.log('cookie', cookie);
+    // store.dispath('global/get')
+  }
+// console.log(Object.keys(paramsreq.ctx.request.header.cookie));
+// console.log(req.ctx.request.header.cookie);
   // do sth
 }
 

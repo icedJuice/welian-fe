@@ -105,7 +105,7 @@ module.exports = {
     }
   ],
   router: {
-    middleware: ['layout', 'axiosMiddle'],
+    middleware: ['layout'],
     linkActiveClass: 'link-active'
   },
 
