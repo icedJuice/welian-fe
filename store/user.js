@@ -4,14 +4,14 @@ import API from '../api';
 // import cloneDeep from 'lodash/cloneDeep';
 import _ from '../utils/underscore';
 
-const defaultPageSize = 20;
+const defaultPageSize = 10;
 
 export const state = () => ({
   searchStr: '',
   userCodeList: [],
   loading: false,
   done: false,
-  currentPage: 0
+  currentPage: 1
 });
 
 export const mutations = {
@@ -29,7 +29,7 @@ export const mutations = {
 export const actions = {
 
     search({ commit, dispatch }, { value = '' } = {}) {
-        commit('SET_STATE', {searchStr: value, userCodeList: [], loading: false, done: 0, currentPage: 0 });
+        commit('SET_STATE', {searchStr: value, userCodeList: [], loading: false, done: 0, currentPage: 1 });
         dispatch('getUserCodes');
     },
 
@@ -52,6 +52,6 @@ export const actions = {
     const newUserCodeList = [...userCodeList];
     newUserCodeList.splice(defaultPageSize * currentPage, data.length, ...data);
 
-    commit('SET_STATE', { userCodeList: newUserCodeList, loading: false, done: !res.hasNextPage });
+    commit('SET_STATE', { userCodeList: newUserCodeList, loading: false, done: !res.hasNextPage, currentPage: currentPage + 1  });
   },
 };

@@ -12,66 +12,68 @@
       </div>
     </div>
 
-    <div class="lif-list">
-      <div class="card-item" v-for="item in userCodeList" :key="item.id">
-        <div class="qrcode-box">
-          <img class="qrcode-img" :src="item.qrImageUrl" alt="" />
-        </div>
-        <div class="qrcode-info">
-          <div class="info-box">
-            <div class="code-title">
-              <h2 class="title">微信视频号：达芬奇百科备份</h2>
-
-              <span class="status" v-if="item.state === 0">审核中</span>
-              <span class="status" v-if="item.state === 1">审核通过</span>
-              <span class="status fail" v-if="item.state === 2">被拒绝</span>
-            </div>
-            <div class="code-view">
-              <div class="view-item">
-                <i class="icon icon-see"></i>
-                <span>2379</span>
+    <inf-list @loadMore="loadMore" :loading="loading" :done="done">
+      <div class="lif-list">
+        <div class="card-item" v-for="item in userCodeList" :key="item.id">
+          <div class="qrcode-box">
+            <img class="qrcode-img" :src="item.qrImageUrl" alt="" />
+          </div>
+          <div class="qrcode-info">
+            <div class="info-box">
+              <div class="code-title">
+                <h2 class="title">{{item.typeCategoryName}}-{{item.typeName}}: {{item.title}}</h2>
+                <span class="status" v-if="item.state === 0">审核中</span>
+                <span class="status" v-if="item.state === 1">审核通过</span>
+                <span class="status fail" v-if="item.state === 2">被拒绝</span>
               </div>
-              <div class="view-item">
-                <i class="icon icon-zan"></i>
-                <span>786</span>
+              <div class="code-view">
+                <div class="view-item">
+                  <i class="icon icon-see"></i>
+                  <span>2379</span>
+                </div>
+                <div class="view-item">
+                  <i class="icon icon-zan"></i>
+                  <span>786</span>
+                </div>
+                <div class="view-item">
+                  <span>编号{{item.qrNumber}}</span>
+                </div>
               </div>
-              <div class="view-item">
-                <span>编号10001</span>
+              <div class="code-tag">
+                <span class="tag-item" v-for="label in (item.labels && item.labels.split(/\s+/) || [])" :key="label">{{label}}</span>
               </div>
-            </div>
-            <div class="code-tag">
-              <span class="tag-item">原创</span>
-              <span class="tag-item">特别</span>
-              <span class="tag-item">开心</span>
-            </div>
-            <div class="func-box">
-              <div class="detail-btn">查看详情</div>
-              <div class="status-btn disable">
-                <span>已过期</span>
+              <div class="func-box">
+                <div class="detail-btn">查看详情</div>
+                <div class="status-btn disable">
+                  <span>已过期</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </inf-list>
   </div>
 </template>
 
 <script>
+
+import infList from '~/components/infList';
+
 export default {
   name: 'user-qrcode',
-
   data() {
     return {
       searchValue: ''
-    }
+    };
+  },
+  components: {
+    infList,
   },
 
   fetch({ store, route: { path } }) {
     return new Promise(r => {
-      Promise.all([])
-        .then(r)
-        .catch(r);
+      Promise.all([]).then(r).catch(r);
     });
   },
   mounted() {
@@ -87,17 +89,29 @@ export default {
 
     searchAll() {
       this.$store.dispatch('user/search');
+    },
+
+    loadMore() {
+      this.$store.dispatch('user/getUserCodes');
     }
   },
 
   computed: {
     userCodeList() {
-      // item.state 
+      // item.state
       // 0: 未审核
       // 1: 通过
       // 2: 拒绝
       console.log('this.$store.state.user.userCodeList', this.$store.state.user.userCodeList);
       return this.$store.state.user.userCodeList || [];
+    },
+    loading() {
+      console.log('this.$store.state.user.loading', this.$store.state.user.loading);
+      return this.$store.state.user.loading;
+    },
+    done() {
+      console.log('this.$store.state.user.done', this.$store.state.user.done);
+      return this.$store.state.user.done;
     }
   }
 };
@@ -110,7 +124,6 @@ export default {
   .search-bar {
     display: flex;
     margin: 0 60px 0 40px;
-
   }
   .input-box {
     display: flex;
@@ -164,6 +177,7 @@ export default {
 
   .lif-list {
     margin-top: 20px;
+    margin-bottom: 20px;
   }
   .card-item {
     position: relative;
@@ -274,6 +288,7 @@ export default {
       font-size: 14px;
       line-height: 20px;
       color: #07c160;
+      cursor: pointer;
     }
     .status-btn {
       display: flex;

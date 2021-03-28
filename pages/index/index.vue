@@ -59,6 +59,7 @@ export default {
   position: relative;
   flex-grow: 1;
   font-size: 0px;
+  margin-bottom: 40px;
 }
 .page-body {
   position: relative;
