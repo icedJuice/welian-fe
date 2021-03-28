@@ -2,27 +2,29 @@
   <div class="user-sec-page qrcode-page">
     <div class="search-bar">
       <div class="input-box">
-        <input class="input" type="text" />
+        <input class="input" type="text" v-model="searchValue" />
       </div>
-      <div class="btn btn-all">
+      <div class="btn btn-all" @click="searchAll">
         <span>全部</span>
       </div>
-      <div class="btn btn-select">
+      <div class="btn btn-select" @click="search">
         <span>查询</span>
       </div>
     </div>
 
     <div class="lif-list">
-      <div class="card-item" v-for="e in 6" :key="e">
+      <div class="card-item" v-for="item in userCodeList" :key="item.id">
         <div class="qrcode-box">
-          <img class="qrcode-img" src="~static/images/qrcode.png" alt="" />
+          <img class="qrcode-img" :src="item.qrImageUrl" alt="" />
         </div>
         <div class="qrcode-info">
           <div class="info-box">
             <div class="code-title">
               <h2 class="title">微信视频号：达芬奇百科备份</h2>
-              <span class="status">审核通过</span>
-              <span class="status fail">被拒绝</span>
+
+              <span class="status" v-if="item.state === 0">审核中</span>
+              <span class="status" v-if="item.state === 1">审核通过</span>
+              <span class="status fail" v-if="item.state === 2">被拒绝</span>
             </div>
             <div class="code-view">
               <div class="view-item">
@@ -57,7 +59,47 @@
 
 <script>
 export default {
-  name: 'user-qrcode'
+  name: 'user-qrcode',
+
+  data() {
+    return {
+      searchValue: ''
+    }
+  },
+
+  fetch({ store, route: { path } }) {
+    return new Promise(r => {
+      Promise.all([])
+        .then(r)
+        .catch(r);
+    });
+  },
+  mounted() {
+    if (window) {
+      this.$store.dispatch('user/getUserCodes');
+    }
+  },
+
+  methods: {
+    search() {
+      this.$store.dispatch('user/search', { value: this.searchValue });
+    },
+
+    searchAll() {
+      this.$store.dispatch('user/search');
+    }
+  },
+
+  computed: {
+    userCodeList() {
+      // item.state 
+      // 0: 未审核
+      // 1: 通过
+      // 2: 拒绝
+      console.log('this.$store.state.user.userCodeList', this.$store.state.user.userCodeList);
+      return this.$store.state.user.userCodeList || [];
+    }
+  }
 };
 </script>
 <style lang="scss">
@@ -68,6 +110,7 @@ export default {
   .search-bar {
     display: flex;
     margin: 0 60px 0 40px;
+
   }
   .input-box {
     display: flex;
@@ -102,6 +145,7 @@ export default {
     width: 88px;
     height: 30px;
     cursor: pointer;
+    user-select: none;
   }
   .btn-all {
     background: #ffffff;
@@ -119,6 +163,7 @@ export default {
   }
 
   .lif-list {
+    margin-top: 20px;
   }
   .card-item {
     position: relative;
