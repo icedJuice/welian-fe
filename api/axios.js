@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 
 const ax = axios.create({
-  baseURL: 'http://192.168.0.146:' + BASE_PORT,
+  baseURL: 'http://localhost:' + BASE_PORT,
 });
 
 const headers = {
