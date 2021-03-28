@@ -1,10 +1,11 @@
 import querystring from 'querystring';
 import { BASE_PORT } from '../config';
+import Cookies from 'js-cookie';
 
 import axios from 'axios';
 
 const ax = axios.create({
-  baseURL: 'http://localhost:' + BASE_PORT,
+  baseURL: 'http://192.168.0.146:' + BASE_PORT,
 });
 
 const headers = {
@@ -48,15 +49,27 @@ ax.interceptors.response.use(
   }
 );
 
-export const GET = path => params =>
-  ax
+export const GET = path => _params => {
+  const authToken = _params && _params.authToken || Cookies.get('WeLink');
+  const params = {...(_params || {}), authToken};
+  return ax
     .get(base + path, { params }, {headers})
     .then(res => res.data)
     .catch(() => null);
+}
 
-export const POST = path => data => {
+export const POST = path => _data => {
+  const authToken = Cookies.get('WeLink');
+  const isUpload = /upload/i.test(path);
+  let data = _data;
+  if (!isUpload) {
+    data = {...(_data || {}), authToken};
+  }
+  const addHeaders = isUpload ? {
+    'Content-Type': 'application/form-data',
+  } : {};
   return ax
-    .post(base + path, data, {headers})
+    .post(base + path, data, {headers: { ... headers, ...addHeaders}})
     .then(res => res.data)
     .catch(() => null);
 }

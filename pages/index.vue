@@ -27,7 +27,7 @@ export default {
     return new Promise(r => {
       Promise.all([
         store.dispatch('options/setLayoutPanel', {isLayoutPanel: true}),
-        store.dispatch('global/getUserInfo'),
+        store.dispatch('global/getQrTypes'),
       ]).then(r).catch(r);
     });
   },

@@ -3,7 +3,7 @@
     <div class="header-wrap">
       <div class="header-inner">
         <div class="left-side">
-          <nuxt-link to="">
+          <nuxt-link to="/">
             <img class="logo" src="~/static/images/logo-blank.png" alt="" />
           </nuxt-link>
           <div class="search-wrap">
@@ -19,15 +19,15 @@
 
         <div class="auth-wrap">
           <div class="user-info" v-if="userInfo">
-            <nuxt-link class="user-name" to="/user">{{ userInfo.nickName }}</nuxt-link>
+            <nuxt-link @click="() => jump('/user')" class="user-name" to="/user">{{ userInfo.nickName }}</nuxt-link>
             <i class="line"></i>
-            <span class="exit" to="exit" @click="unAuthUser" >退出</span>
+            <span class="exit" @click="unAuthUser" >退出</span>
           </div>
 
           <div class="login-info" v-else>
-            <nuxt-link class="login" :to="`/session${pathname}`">登陆</nuxt-link>
+            <nuxt-link class="login" :to="`/session?refer=${pathname}`">登陆</nuxt-link>
             <i class="line"></i>
-            <nuxt-link class="sign" :to="`/session${pathname}`">注册</nuxt-link>
+            <nuxt-link class="sign" :to="`/session?refer=${pathname}`">注册</nuxt-link>
           </div>
         </div>
         <div class="nav-wrap" :class="{ open: open }">
@@ -68,6 +68,7 @@ export default {
 
   mounted() {
     if (window) {
+      this.pathname = this.$route.path;
       window.addEventListener('resize', this.listenWidth);
     }
   },
@@ -96,7 +97,11 @@ export default {
 
     unAuthUser() {
       this.$store.dispatch('global/unAuthUser');
-      this.$router.replace('/');
+      this.$router.replace(`/session?refer=${encodeURI(this.$route.path)}`);
+    },
+    jump(path) {
+      console.log('path');
+      this.$router.push(path);
     }
   },
   computed: {
@@ -205,6 +210,7 @@ export default {
     }
     .exit {
       padding-left: 10px;
+      cursor: pointer;
     }
     .sign {
       padding-right: 0;
@@ -218,7 +224,7 @@ export default {
 
   .nav-wrap {
     display: none;
-    user-select: none;
+    // user-select: none;
     .mask {
       display: none;
       width: 100%;

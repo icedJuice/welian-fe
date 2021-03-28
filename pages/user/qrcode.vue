@@ -101,6 +101,7 @@ export default {
     align-items: center;
     width: 88px;
     height: 30px;
+    cursor: pointer;
   }
   .btn-all {
     background: #ffffff;

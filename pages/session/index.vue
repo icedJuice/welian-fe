@@ -339,10 +339,6 @@ export default {
 
   computed: {
     signMsgOk() {
-      console.log(!(!this.sign_email || this.sign_email_err || 
-          !this.sign_nick || this.sign_nick_err ||
-          !this.sign_pw || this.sign_pw_err ||
-          !this.sign_ident || this.sign_ident_err) && this.sign_agreement);
       return !(!this.sign_email || this.sign_email_err || 
           !this.sign_nick || this.sign_nick_err ||
           !this.sign_pw || this.sign_pw_err ||

@@ -46,6 +46,7 @@ export default {
 .user-sec-page.user-info-page {
   padding: 40px 60px 40px 40px;
   color: #333;
+  background-color: #fff;
   .form-item {
     display: flex;
     margin-top: 24px;

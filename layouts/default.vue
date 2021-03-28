@@ -13,7 +13,17 @@ export default {
 
   components: {
     layoutHeader,
-  }, 
+  },
+
+  // fetch({ store, route: { path } }) {
+  //   return new Promise(r => {
+  //     Promise.all([
+  //       store.dispatch('options/setLayoutPanel', {isLayoutPanel: true}),
+  //       store.dispatch('global/getUserInfo'),
+  //     ]).then(r).catch(r);
+  //   });
+  // },
+
   created() {
 
   },

@@ -1,11 +1,11 @@
 <template>
   <div class="card-item" :class="{ 'card-item-hor': isHor, 'card-item-col': !isHor }">
-    <nuxt-link to="/detail/123" class="card-hor-box" v-if="isHor">
+    <nuxt-link :to="`/detail/${item.id}`" class="card-hor-box" v-if="isHor">
       <div class="qrcode-box">
-        <img class="qrcode-img" src="~/static/images/qrcode.png" alt="" />
+        <img class="qrcode-img" :src="item.qrImageUrl" alt="" />
       </div>
       <div class="info">
-        <h3 class="code-name">达芬奇绘本第二次阅读会</h3>
+        <h3 class="code-name">{{item.title}}</h3>
         <div class="act-sheet">
           <div class="see">
             <i class="icon-see"></i>
@@ -17,21 +17,18 @@
           </div>
         </div>
         <p class="code-desc">
-          北京交个朋友数码科技，罗永浩【直播】北京交个朋友数码科技，罗永浩【直播】
-          北京交个朋友数码科技，罗永浩【直播】北京交个朋友数码科技，罗永浩【直播】
+          {{item.description}}
         </p>
         <div class="tag-wrap">
-          <span class="tag">阅读</span>
-          <span class="tag">交友</span>
-          <span class="tag">观望</span>
+          <span class="tag" v-for="label in (item.labels && item.labels.split(/\s+/) || [])" :key="label">{{label}}</span>
         </div>
       </div>
     </nuxt-link>
-    <nuxt-link  to="/detail/123" class="card-col-box" v-else>
+    <nuxt-link  :to="`/detail/${item.id}`" class="card-col-box" v-else>
       <div class="card-img">
-        <img class="col-qrcode" src="~/static/images/qrcode.png" />
+        <img class="col-qrcode" :src="item.qrImageUrl" />
       </div>
-      <h6 class="col-name">达芬奇第二次绘本阅读会</h6>
+      <h6 class="col-name">{{item.title}}</h6>
       <div class="zan-slot">
         <div class="see">
           <i class="icon-see"></i>
@@ -43,7 +40,7 @@
         </div>
       </div>
       <div class="tag">
-        <span>微信群</span>
+        <span v-for="label in formatLabel(item.labels)" :key="label">{{label}}</span>
       </div>
     </nuxt-link>
   </div>
@@ -52,10 +49,19 @@
 <script>
 export default {
   name: 'card-item',
-  props: ['isHor'],
+  props: ['isHor', 'item'],
   data() {
     return {};
   },
+  methods: {
+    formatLabel(label) {
+      if (!label) {
+        return [];
+      }
+      return label.split(/\s+/);
+    }
+  },
+
   methods: {}
 };
 </script>

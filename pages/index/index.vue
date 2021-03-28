@@ -2,29 +2,24 @@
   <div class="main-page-container">
     <div class="page-body" v-if="isHor">
       <div class="lif-list">
-        <card-item :isHor="isHor"></card-item>
-        <card-item :isHor="isHor"></card-item>
-        <card-item :isHor="isHor"></card-item>
-        <card-item :isHor="isHor"></card-item>
-        <card-item :isHor="isHor"></card-item>
+        <card-item
+          :isHor="true"
+          v-for="(item, index) in codeList"
+          :key="(item && item.id) || index"
+          :item="item"
+        ></card-item>
       </div>
       <div class="page-body-right-side">
         <sort-sheet></sort-sheet>
       </div>
     </div>
     <div class="lif-list" v-else>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
-      <card-item :isHor="isHor"></card-item>
+      <card-item
+        :isHor="false"
+        v-for="(item, index) in codeList"
+        :key="(item && item.id) || index"
+        :item="item"
+      ></card-item>
     </div>
   </div>
 </template>
@@ -36,14 +31,20 @@ import sortSheet from '~/components/sort-sheet';
 export default {
   name: 'index-index',
   data() {
-    return {
-      isHor: true
-    };
+    return {};
   },
 
   components: {
     cardItem,
     sortSheet
+  },
+  computed: {
+    isHor() {
+      return this.$store.state.global.mainNavIdx !== 0;
+    },
+    codeList() {
+      return this.$store.state.global.codeList.filter(e => e) || [];
+    }
   }
 };
 </script>

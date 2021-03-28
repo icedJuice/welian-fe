@@ -9,8 +9,9 @@ export const actions = {
     store.commit('options/SET_USER_AGENT', userAgent);
 
     const initAppData = [
+      // store.dispatch('global/setNavActive', { path: route.path })
       // 网站信息
-      store.dispatch('global/setNavActive', { path: route.path })
+      // store.dispatch('global/setNavActive', { path: route.path })
     ];
     return Promise.all(initAppData);
   }

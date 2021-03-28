@@ -7,7 +7,7 @@
           <nuxt-link
             v-for="route in routes"
             :key="route.path"
-            :to="route.path"
+            :to="{path: route.path}"
             class="nav-item"
             :class="{ active: route.path === currentRoute.path }"
           >
@@ -58,26 +58,19 @@ export default {
       currentRoute: ''
     };
   },
-
-  fetch(props) {
-    const { store, redirect, route: { path } } = props;
-    console.log('path, ', path);
-    return new Promise(r => {
-      Promise.all([
-        store.dispatch('global/getUserInfo'),
-      ]).then(r).catch((error) => {
-        console.log(error);
-        redirect(`/session?refer=${path}`);
-        r();
-      });
-    });
-  },
-
-  mounted() {
+ 
+  beforeMount() {
     if (window) {
       const pathname = window.location.pathname;
       this.setCurrentPath(pathname);
     }
+  },
+  mounted() {
+    
+    // if (window) {
+    //   const pathname = window.location.pathname;
+    //   this.setCurrentPath(pathname);
+    // }
   },
 
   watch: {

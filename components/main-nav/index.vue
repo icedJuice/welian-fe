@@ -6,37 +6,37 @@
           <div class="nav-slider">
             <div
               class="nav-item"
-              v-for="(nav, index) in navs.navList"
-              :key="index"
-              :class="{ active: nav.type === actNav.type }"
+              v-for="(nav, index) in navs"
+              :key="nav.value"
+              :class="{ active: index === mainNavIdx }"
               @click="
                 () => {
-                  onNavClick(nav);
+                  onNavClick(nav, index);
                 }
               "
             >
-              <span>{{ nav.name }}</span>
+              <span>{{ nav.label }}</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="nav-wraps sec-nav" :class="{show: actNav.hasSec}">
+    <div class="nav-wraps sec-nav" :class="{show: mainNavIdx === 0}">
       <div class="nav-inner">
         <div class="nav-list">
           <div class="nav-slider">
             <div
               class="nav-item"
-              v-for="(nav, index) in navs.secNavList"
+              v-for="(nav, index) in navs[0].children"
               :key="index"
-              :class="{ active: nav.type === secActNav.type }"
+              :class="{ active: index === mainSecNavIdx }"
               @click="
                 () => {
-                  onSecNavClick(nav);
+                  onSecNavClick(nav, index);
                 }
               "
             >
-              <span>{{ nav.name }}</span>
+              <span>{{ nav.label }}</span>
             </div>
           </div>
         </div>
@@ -46,16 +46,33 @@
 </template>
 
 <script>
-import navs from './navs';
+
+const mainTypes = {
+  label: '首页',
+  value: 'main',
+  hasSec: true,
+  children: [
+    {
+      value: 0,
+      label: '推荐'
+    },
+    {
+      value: 1,
+      label: '最热'
+    },
+    {
+      value: 1,
+      label: '最新'
+    }
+  ]
+
+};
 
 export default {
   name: 'main-nav',
 
   data() {
     return {
-      navs,
-      actNav: navs.navList[0],
-      secActNav: navs.secNavList[0]
     };
   },
 
@@ -68,12 +85,26 @@ export default {
   },
 
   methods: {
-    onNavClick(nav) {
-      this.actNav = nav;
+    onNavClick(nav, index) {
+      this.$store.dispatch('global/onNavClick', { mainNavIdx: index });
     },
-    onSecNavClick(nav) {
-      this.secActNav = nav;
+    onSecNavClick(nav, index) {
+      this.$store.dispatch('global/onNavClick', { mainSecNavIdx: index });
     }
+  },
+
+  computed: {
+    navs() {
+      const qrList = this.$store.state.global.qrTypes || [];
+      const navList = [mainTypes, ...qrList];
+      return navList;
+    },
+    mainNavIdx() {
+      return this.$store.state.global.mainNavIdx;
+    },
+    mainSecNavIdx() {
+      return this.$store.state.global.mainSecNavIdx;
+    },
   }
 };
 </script>

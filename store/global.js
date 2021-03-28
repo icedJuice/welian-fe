@@ -4,13 +4,40 @@ import API from '../api';
 // import cloneDeep from 'lodash/cloneDeep';
 import _ from '../utils/underscore';
 
+
+const defaultPageSize = 20;
+
+const defaultHomePayload = {
+  currentPage: 1,
+  pageSize: defaultPageSize,
+  loading: false,
+  done: false,
+};
+
 export const state = () => ({
   // 面包屑导航，PC, [{ name:, href }]
   bradeList: [],
   routePath: null,
   userInfo: null,
   // 验证码
-  registerInfo: null
+  registerInfo: null,
+
+  // 城市
+  cityList: [],
+
+  //  二维码分类
+  qrTypes: [],
+
+
+  // 首页主导航选中
+  mainNavIdx: 0,
+  // 首页附导航选中
+  mainSecNavIdx: 0,
+  // 首页接口
+  homePayload: {
+    ...defaultHomePayload,
+  },
+  codeList: [],
 });
 
 export const mutations = {
@@ -31,14 +58,39 @@ export const actions = {
     commit('SET_STATE', { bradeList: [...defalutList, ...bradeList] });
   },
 
-  async setNavActive({ commit }, { path }) {
-    commit('SET_STATE', { routePath: path });
+  
+  async onNavClick({commit, dispatch, state}, { mainNavIdx, mainSecNavIdx }) {
+    const newState = {
+      codeList: [],
+    };
+    const homePayload = {...defaultHomePayload};
+
+    // 主导航被点击
+    if (typeof mainNavIdx === 'number') {
+      newState.mainNavIdx = mainNavIdx;
+      newState.mainSecNavIdx = 0;
+      if (mainNavIdx !== 0) {
+        homePayload.category = state.qrTypes[mainNavIdx - 1].value;
+        homePayload.typeId = '';
+      }
+    }
+    // 附导航被点击
+    if (typeof mainSecNavIdx === 'number') {
+      const _mainNavIdx = state.mainNavIdx;
+      newState.mainSecNavIdx = mainSecNavIdx;
+
+      if (_mainNavIdx !== 0) {
+        homePayload.typeId = state.qrTypes[_mainNavIdx - 1].children[mainSecNavIdx].value;
+      }
+    }
+    newState.homePayload = homePayload;
+    commit('SET_STATE', newState);
+    dispatch('getQrCodes');
   },
 
   async signIn({ commit, dispatch }, payload) {
     try {
       const userInfo = await API.signIn(payload);
-      console.log(userInfo);
       const status = (userInfo && userInfo.status) || null;
       if (status && status.status === 0) {
         commit('SET_STATE', { userInfo });
@@ -98,11 +150,11 @@ export const actions = {
       throw new Error(error);
     }
   },
-  async getUserInfo({state, commit}) {
+  async getUserInfo({ state, dispatch }, { authToken }) {
     if (!state.userInfo) {
-      const WeLink = Cookies.get('WeLink');
-      if (WeLink) {
-        const userInfo = await API.getUserInfo();
+      const token = authToken || Cookies.get('WeLink');
+      if (token) {
+        const userInfo = await API.getUserInfo({ authToken: token });
         if (userInfo && userInfo.status && userInfo.status.status === 0) {
           dispatch('authUser', { userInfo });
         } else {
@@ -120,8 +172,133 @@ export const actions = {
     Cookies.set('WeLink', authToken, { expires: 14 });
   },
 
-  unAuthUser() {
+  unAuthUser({ commit }) {
     commit('SET_STATE', { userInfo: null });
     Cookies.set('WeLink', '', { expires: 0 });
-  }
+  },
+  async getCitiesInfo({ state, commit }) {
+    if (state.cityList.length) {
+      return;
+    }
+    const citys = await API.GetCitiesInfo();
+    const cityList = [];
+    citys.forEach(city => {
+      const currIndex = cityList.findIndex(p => p.label === city.province);
+      if (currIndex < 0) {
+        const currCity = {
+          value: cityList.length,
+          label: city.province,
+          children: [
+            {
+              value: city.name,
+              label: city.name
+            }
+          ]
+        };
+        cityList.push(currCity);
+      } else {
+        cityList[currIndex].children.push({
+          value: city.name,
+          label: city.name
+        });
+      }
+    });
+    commit('SET_STATE', { cityList })
+  },
+  
+  async getQrTypes({ state, commit }) {
+    if (state.qrTypes && state.qrTypes.length ) {
+      return;
+    }
+    const res = await API.getQrTypes();
+    const resorce = res.data;
+    const qrTypes = [];
+    resorce.forEach(r => {
+      const currIndex = qrTypes.findIndex(q => q.value === r.category);
+      if (currIndex < 0) {
+        const currType = {
+          value: r.category,
+          label: r.categoryName,
+          children: [
+            {
+              value: r.id,
+              label: r.name
+            }
+          ]
+        };
+        qrTypes.push(currType);
+      } else {
+        qrTypes[currIndex].children.push({
+          value: r.id,
+          label: r.name
+        });
+      }
+    });
+    commit('SET_STATE', { qrTypes });
+  },
+
+  async uploadFile(_, payload) {
+    const res = await API.uploadFile(payload);
+    return res;
+  },
+
+  async createQrCode(_, payload) {
+    const res = await API.createQrCode(payload);
+    const status = res.status || {};
+    if (status.status === 0) {
+      return res;
+    } 
+    throw new Error(status.message || '接口异常');
+  },
+
+  async getQrCodes({ dispatch, state }) {
+      const { mainNavIdx, mainSecNavIdx } = state;
+
+      if (mainNavIdx === 0) {
+        // 首页列表
+        if (mainSecNavIdx === 0) {
+          // 推荐
+        } else if (mainSecNavIdx === 1) {
+          // 最热
+        } else {
+          // 最新
+        }
+      } else {
+        dispatch('getQrCodesByType')
+      }
+  },
+
+  // 按分类拉列表
+  async getQrCodesByType ({ commit, state }) {
+    const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
+    const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
+
+    if (loading || done) {
+      return;
+    }
+    const payload = {
+      pageSize,
+      currentPage,
+      category,
+      typeId,
+    }
+    const res = await API.getQrCodes(payload);
+    const data = res.data;
+    const newCodeList = [...codeList];
+    newCodeList.splice(pageSize * currentPage, data.length, ...data);
+
+    const newHomePayload = {
+      ...homePayload,
+      loading: false,
+      done: !res.hasNextPage,
+      currentPage: currentPage + 1,
+    }
+
+    commit('SET_STATE', {
+      codeList: newCodeList,
+      homePayload: newHomePayload,
+    });
+
+
+  },
 };

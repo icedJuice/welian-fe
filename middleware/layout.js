@@ -1,13 +1,33 @@
 export default function (params) {
-  const { store, route, req } = params;
+  const { store, route, req, redirect, isHMR, isStatic } = params;
   const cookie = req && req.ctx && req.ctx.request && req.ctx.request.header.cookie;
-  if (/WeLian/.test(cookie)) {
-    console.log('cookie', cookie);
-    // store.dispath('global/get')
+  return new Promise((res) => {
+    if (typeof window == 'object') {
+      res();
+      return;
+    }
+    const authToken = getAuthToken(cookie);
+    if (authToken) {
+      store.dispatch('global/getUserInfo', { authToken }).then(res).catch((error) => {
+        redirect('/');
+        res();
+      });
+    } else {
+      if (/\/user/.test(route.path)) {
+        redirect('/');
+      }
+      res();
+    }
+  });
+}
+
+function getAuthToken (strCookie) {
+  if (!strCookie) {
+    return null;
   }
-// console.log(Object.keys(paramsreq.ctx.request.header.cookie));
-// console.log(req.ctx.request.header.cookie);
-  // do sth
+  const match = (strCookie || '').match(/WeLink=(.[^;]*)/);
+  const authToken = match && match[1];
+  return authToken;
 }
 
 // [ 'isStatic',

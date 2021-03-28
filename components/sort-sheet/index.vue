@@ -4,26 +4,12 @@
             <h6 class="title">热门频道</h6>
         </div>
         <div class="sort-wrap">
-            <div class="sort-item">
-                <span class="sort-item-text">交友群</span>
-            </div>
-            <div class="sort-item">
-                <span class="sort-item-text">交友群</span>
-            </div>
-            <div class="sort-item">
-                <span class="sort-item-text">宝妈群</span>
-            </div>
-            <div class="sort-item">
-                <span class="sort-item-text">吃货群</span>
-            </div>
-            <div class="sort-item">
-                <span class="sort-item-text">咋咋群</span>
-            </div>
-            <div class="sort-item">
-                <span class="sort-item-text">阅读群</span>
-            </div>
-            <div class="sort-item">
-                <span class="sort-item-text">喝酒群</span>
+            <div class="sort-item"
+                v-for="(nav, index) in secNavs"
+                :key="nav.value"
+                @click="() => onNavClick(index)"
+            >
+                <span class="sort-item-text">{{nav.label}}</span>
             </div>
         </div>
     </div>
@@ -31,6 +17,28 @@
 <script>
 export default {
     name: 'sort-sheet',
+
+    methods: {
+        onNavClick(index) {
+            const secIdx = this.$store.state.global.mainSecNavIdx;
+            if (secIdx !== index) {
+                this.$store.dispatch('global/onNavClick', { mainSecNavIdx: index });
+            }
+        }
+    },
+
+    computed: {
+        secNavs() {
+            const mainNavIdx = this.$store.state.global.mainNavIdx;
+            if (mainNavIdx > 0) {
+                return this.$store.state.global.qrTypes[mainNavIdx - 1].children;
+            }
+            return []
+        },
+        mainSecNavIdx() {
+        return this.$store.state.global.mainSecNavIdx;
+        },
+    }
 }
 </script>
 

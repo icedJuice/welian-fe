@@ -20,6 +20,10 @@ import {
   Image,
   Form,
   FormItem,
+  Select,
+  Option,
+  Cascader,
+  Upload,
 } from 'element-ui';
 
 Vue.use(Tabs);
@@ -39,6 +43,11 @@ Vue.use(BreadcrumbItem);
 Vue.use(Image);
 Vue.use(Form);
 Vue.use(FormItem);
+Vue.use(Select);
+Vue.use(Option);
+Vue.use(Cascader);
+Vue.use(Upload);
+
 
 Vue.prototype.$ELEMENT = { size: 'small' };
 Vue.prototype.$notify = Notification;
