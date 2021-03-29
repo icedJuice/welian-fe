@@ -38,6 +38,8 @@ export const state = () => ({
     ...defaultHomePayload,
   },
   codeList: [],
+
+  codeDetail: {},
 });
 
 export const mutations = {
@@ -298,7 +300,28 @@ export const actions = {
       codeList: newCodeList,
       homePayload: newHomePayload,
     });
-
-
   },
+
+  async getQrDetail({ commit, dispatch }, payload) {
+    
+    try {
+      const res = await API.getCodeDetail(payload);
+      const status = res.status;
+      if (status && status.status === 0) {
+        commit('SET_STATE', { codeDetail: res });
+        dispatch('displayQr', payload);
+      }
+    } catch (error) {
+    }
+  },
+  // 二维码被查看
+  async displayQr(_, payload) {
+    const res = await API.displayCode(payload);
+    return res;
+  },
+  // 二维码点赞
+  async priseQr(_, payload) {
+    const res = await API.priseQr(payload);
+    return res;
+  }
 };

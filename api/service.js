@@ -118,3 +118,26 @@ export const getQrCodes = GET('/Qr/GetQrCodes');
 */
 
 export const getMyQrCodes = GET('/Qr/GetMyQrCodes');
+
+
+/**
+ * 
+ * 获取二维码详情
+ * 
+ * id: id
+*/
+export const getCodeDetail = GET('/Qr/QrCodeDetail');
+
+/**
+ * 记录二维码被查看
+ * id: id
+ * 
+*/
+export const displayCode = POST('/Qr/DisplayQr');
+
+/**
+ * 点赞二维码
+ * id: id
+ * 
+*/
+export const priseQr = POST('/Qr/PriseQr');

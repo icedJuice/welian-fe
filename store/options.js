@@ -87,7 +87,6 @@ export const mutations = {
 };
 
 export const actions = {
-  // 获取网站信息
   async getTDK({ commit }, { indexId, id } = {}) {
    
   },

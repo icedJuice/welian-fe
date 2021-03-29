@@ -87,9 +87,16 @@ export default {
   methods: {
     onNavClick(nav, index) {
       this.$store.dispatch('global/onNavClick', { mainNavIdx: index });
+      const path = this.$route.path;
+      if (path != '/') {
+        this.$router.push('/');
+      }
     },
     onSecNavClick(nav, index) {
       this.$store.dispatch('global/onNavClick', { mainSecNavIdx: index });
+      if (path != '/') {
+        this.$router.push('/');
+      }
     }
   },
 
