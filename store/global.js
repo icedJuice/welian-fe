@@ -253,21 +253,54 @@ export const actions = {
     throw new Error(status.message || '接口异常');
   },
 
-  async getQrCodes({ dispatch, state }) {
-      const { mainNavIdx, mainSecNavIdx } = state;
+    // 拉取二维码列表
+  async getQrCodes({ state, commit }) {
 
+      const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
+      const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
+
+      if (loading || done) {
+        return;
+      }
+
+      const payload = {
+        pageSize,
+        currentPage,
+        category,
+        typeId,
+      };
+      let api = API.getQrCodes;
       if (mainNavIdx === 0) {
         // 首页列表
         if (mainSecNavIdx === 0) {
           // 推荐
         } else if (mainSecNavIdx === 1) {
           // 最热
+          api = API.getTopQrCodes;
         } else {
           // 最新
         }
       } else {
-        dispatch('getQrCodesByType')
+        payload.category = category;
+        payload.typeId = typeId;
       }
+
+      const res = await API.getQrCodes(payload);
+      const data = res.data;
+      const newCodeList = [...codeList];
+      newCodeList.splice(pageSize * currentPage, data.length, ...data);
+  
+      const newHomePayload = {
+        ...homePayload,
+        loading: false,
+        done: !res.hasNextPage,
+        currentPage: currentPage + 1,
+      }
+  
+      commit('SET_STATE', {
+        codeList: newCodeList,
+        homePayload: newHomePayload,
+      });
   },
 
   // 按分类拉列表

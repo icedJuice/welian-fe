@@ -39,29 +39,22 @@
           <span class="num">862</span>
         </div>
       </div>
-      <div class="tag">
-        <span v-for="label in formatLabel(item.labels)" :key="label">{{label}}</span>
+      <div class="tag" :class="item.typeCategory">
+        <span>{{item.typeCategoryName}}</span>
       </div>
     </nuxt-link>
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'card-item',
   props: ['isHor', 'item'],
   data() {
-    return {};
+    return {
+    };
   },
-  methods: {
-    formatLabel(label) {
-      if (!label) {
-        return [];
-      }
-      return label.split(/\s+/);
-    }
-  },
-
   methods: {}
 };
 </script>
@@ -165,6 +158,13 @@ export default {
     border-radius: 8px 0 8px 0;
     color: #fff;
     background-color: #12d36f;
+    &.GongZhongHao {
+      background-color: #2781D7;
+    }
+    &.ShiPinHao {
+      background-color: #FA9D3B;
+
+    }
   }
 }
 

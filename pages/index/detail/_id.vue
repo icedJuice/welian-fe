@@ -45,7 +45,7 @@
         <i class="hair-line"></i>
         <div class="btn-zan" @click="onZanClick">
           <i class="icon-zan"></i>
-          <span> {{ codeDetail.price + zan }} </span>
+          <span> {{ codeDetail.prizes + zan }} </span>
         </div>
       </div>
       <div class="right-side">
@@ -104,6 +104,7 @@ export default {
   },
   computed: {
     codeDetail() {
+      console.log('this.$store.state.global.codeDetail', this.$store.state.global.codeDetail);
       return this.$store.state.global.codeDetail || {};
     }
   }

@@ -94,6 +94,8 @@ export default {
     },
     onSecNavClick(nav, index) {
       this.$store.dispatch('global/onNavClick', { mainSecNavIdx: index });
+      const path = this.$route.path;
+      console.log('path', path);
       if (path != '/') {
         this.$router.push('/');
       }

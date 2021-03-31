@@ -110,6 +110,13 @@ export const createQrCode = POST('/Qr/CreateQrCode');
 */
 export const getQrCodes = GET('/Qr/GetQrCodes');
 
+/**
+ * 获取首页最热列表
+ * 
+ * 
+*/
+
+export const getTopQrCodes  = GET('/Qr/GetTopQrCodes');
 
 /**
  * 获取用户qrcode列表
@@ -141,3 +148,5 @@ export const displayCode = POST('/Qr/DisplayQr');
  * 
 */
 export const priseQr = POST('/Qr/PriseQr');
+
+

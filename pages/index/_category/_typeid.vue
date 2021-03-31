@@ -1,18 +1,24 @@
 <template>
   <div class="main-page-container">
-    <div class="lif-list">
-      <card-item
-        :isHor="false"
-        v-for="(item, index) in codeList"
-        :key="(item && item.id) || index"
-        :item="item"
-      ></card-item>
+    <div class="page-body">
+      <div class="lif-list">
+        <card-item
+          :isHor="true"
+          v-for="(item, index) in codeList"
+          :key="(item && item.id) || index"
+          :item="item"
+        ></card-item>
+      </div>
+      <div class="page-body-right-side">
+        <sort-sheet></sort-sheet>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import cardItem from '~/components/card-item';
+import sortSheet from '~/components/sort-sheet';
 
 export default {
   name: 'index-index',
@@ -22,6 +28,7 @@ export default {
 
   components: {
     cardItem,
+    sortSheet
   },
   computed: {
     isHor() {
