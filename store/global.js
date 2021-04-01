@@ -4,14 +4,13 @@ import API from '../api';
 // import cloneDeep from 'lodash/cloneDeep';
 import _ from '../utils/underscore';
 
-
 const defaultPageSize = 20;
 
 const defaultHomePayload = {
   currentPage: 1,
   pageSize: defaultPageSize,
   loading: false,
-  done: false,
+  done: false
 };
 
 export const state = () => ({
@@ -28,18 +27,17 @@ export const state = () => ({
   //  二维码分类
   qrTypes: [],
 
-
   // 首页主导航选中
   mainNavIdx: 0,
   // 首页附导航选中
   mainSecNavIdx: 0,
   // 首页接口
   homePayload: {
-    ...defaultHomePayload,
+    ...defaultHomePayload
   },
   codeList: [],
 
-  codeDetail: {},
+  codeDetail: {}
 });
 
 export const mutations = {
@@ -60,12 +58,11 @@ export const actions = {
     commit('SET_STATE', { bradeList: [...defalutList, ...bradeList] });
   },
 
-  
-  async onNavClick({commit, dispatch, state}, { mainNavIdx, mainSecNavIdx }) {
+  async onNavClick({ commit, dispatch, state }, { mainNavIdx, mainSecNavIdx }) {
     const newState = {
-      codeList: [],
+      codeList: []
     };
-    const homePayload = {...defaultHomePayload};
+    const homePayload = { ...defaultHomePayload };
 
     // 主导航被点击
     if (typeof mainNavIdx === 'number') {
@@ -87,7 +84,7 @@ export const actions = {
     }
     newState.homePayload = homePayload;
     commit('SET_STATE', newState);
-    dispatch('getQrCodes');
+    await dispatch('getQrCodes');
   },
 
   async signIn({ commit, dispatch }, payload) {
@@ -205,12 +202,12 @@ export const actions = {
         });
       }
     });
-    commit('SET_STATE', { cityList })
+    commit('SET_STATE', { cityList });
   },
-  
+
   async getQrTypes({ state, commit }) {
-    if (state.qrTypes && state.qrTypes.length ) {
-      return;
+    if (state.qrTypes && state.qrTypes.length) {
+      return state.qrTypes;
     }
     const res = await API.getQrTypes();
     const resorce = res.data;
@@ -237,6 +234,7 @@ export const actions = {
       }
     });
     commit('SET_STATE', { qrTypes });
+    return qrTypes;
   },
 
   async uploadFile(_, payload) {
@@ -249,62 +247,95 @@ export const actions = {
     const status = res.status || {};
     if (status.status === 0) {
       return res;
-    } 
+    }
     throw new Error(status.message || '接口异常');
   },
 
-    // 拉取二维码列表
-  async getQrCodes({ state, commit }) {
-
-      const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
-      const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
-
-      if (loading || done) {
-        return;
+  async initQrPage({ state, dispatch }, payload) {
+    const { category, typeid } = payload;
+    let qrTypes = state.qrTypes.length ? state.qrTypes : await dispatch('getQrTypes');
+    if (!qrTypes.length) {
+      qrTypes = [];
+    }
+    let mainNavIdx = 0;
+    let mainSecNavIdx = '';
+    if (category == '' || category == 'hot' || category === 'new') {
+      // 首页的 推荐 最热 最新
+      if (category == '') {
+        mainSecNavIdx = 0;
+      } else if (category == 'hot') {
+        mainSecNavIdx = 1;
+      } else if (category == 'new') {
+        mainSecNavIdx = 2;
       }
-
-      const payload = {
-        pageSize,
-        currentPage,
-        category,
-        typeId,
-      };
-      let api = API.getQrCodes;
-      if (mainNavIdx === 0) {
-        // 首页列表
-        if (mainSecNavIdx === 0) {
-          // 推荐
-        } else if (mainSecNavIdx === 1) {
-          // 最热
-          api = API.getTopQrCodes;
-        } else {
-          // 最新
+    } else {
+      // 锁定分类
+      qrTypes.forEach((e1, i1) => {
+        if (category == e1.value) {
+          mainNavIdx = i1 + 1;
+          e1.children.forEach((e2, i2) => {
+            if (e2.value == Number(typeid)) {
+              mainSecNavIdx = i2;
+            }
+          });
         }
-      } else {
-        payload.category = category;
-        payload.typeId = typeId;
-      }
-
-      const res = await API.getQrCodes(payload);
-      const data = res.data;
-      const newCodeList = [...codeList];
-      newCodeList.splice(pageSize * currentPage, data.length, ...data);
-  
-      const newHomePayload = {
-        ...homePayload,
-        loading: false,
-        done: !res.hasNextPage,
-        currentPage: currentPage + 1,
-      }
-  
-      commit('SET_STATE', {
-        codeList: newCodeList,
-        homePayload: newHomePayload,
       });
+    }
+
+    await dispatch('onNavClick', { mainNavIdx, mainSecNavIdx });
+  },
+
+  // 拉取二维码列表
+  async getQrCodes({ state, commit }) {
+    const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
+    const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
+
+    if (loading || done) {
+      return;
+    }
+
+    const payload = {
+      pageSize,
+      currentPage
+    };
+    let api = API.getQrCodes;
+    if (mainNavIdx === 0) {
+      // 首页列表
+      if (mainSecNavIdx === 0) {
+        // 推荐
+        api = API.getTopQrCodes;
+      } else if (mainSecNavIdx === 1) {
+        // 最热
+        api = API.getHotQrCodes;
+      } else {
+        // 最新
+        api = API.getQrCodes;
+      }
+    } else {
+      payload.category = category;
+      payload.typeId = typeId;
+    }
+
+    const res = await API.getQrCodes(payload);
+    const data = res.data;
+    const newCodeList = [...codeList];
+    newCodeList.splice(pageSize * currentPage, data.length, ...data);
+
+    const newHomePayload = {
+      ...homePayload,
+      loading: false,
+      done: !res.hasNextPage,
+      currentPage: currentPage + 1
+    };
+
+    commit('SET_STATE', {
+      codeList: newCodeList,
+      homePayload: newHomePayload
+    });
   },
 
   // 按分类拉列表
-  async getQrCodesByType ({ commit, state }) {
+  async getQrCodesByType({ commit, state }) {
     const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
     const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
 
@@ -315,8 +346,8 @@ export const actions = {
       pageSize,
       currentPage,
       category,
-      typeId,
-    }
+      typeId
+    };
     const res = await API.getQrCodes(payload);
     const data = res.data;
     const newCodeList = [...codeList];
@@ -326,25 +357,46 @@ export const actions = {
       ...homePayload,
       loading: false,
       done: !res.hasNextPage,
-      currentPage: currentPage + 1,
-    }
+      currentPage: currentPage + 1
+    };
 
     commit('SET_STATE', {
       codeList: newCodeList,
-      homePayload: newHomePayload,
+      homePayload: newHomePayload
     });
   },
 
-  async getQrDetail({ commit, dispatch }, payload) {
-    
+  async getQrDetail({ state, commit, dispatch }, payload) {
     try {
       const res = await API.getCodeDetail(payload);
       const status = res.status;
+      let qrTypes = state.qrTypes.length ? state.qrTypes : await dispatch('getQrTypes');
+      if (!qrTypes.length) {
+        qrTypes = [];
+      }
+
       if (status && status.status === 0) {
         commit('SET_STATE', { codeDetail: res });
-        dispatch('displayQr', payload);
+        const { typeCategory, typeId } = res;
+
+        let mainNavIdx = 0;
+        let mainSecNavIdx = '';
+        // 锁定分类
+        qrTypes.forEach((e1, i1) => {
+          if (typeCategory == e1.value) {
+            mainNavIdx = i1 + 1;
+            e1.children.forEach((e2, i2) => {
+              if (e2.value == Number(typeId)) {
+                mainSecNavIdx = i2;
+              }
+            });
+          }
+        });
+        commit('SET_STATE', { mainNavIdx, mainSecNavIdx});
+        await dispatch('displayQr', payload);
       }
     } catch (error) {
+      console.log('error', error);
     }
   },
   // 二维码被查看

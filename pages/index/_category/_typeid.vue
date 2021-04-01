@@ -1,5 +1,8 @@
 <template>
   <div class="main-page-container">
+    <div class="bread-container">
+      <bread-crumb></bread-crumb>
+    </div>
     <div class="page-body">
       <div class="lif-list">
         <card-item
@@ -19,23 +22,33 @@
 <script>
 import cardItem from '~/components/card-item';
 import sortSheet from '~/components/sort-sheet';
+import breadCrumb from '~/components/bread-crumb';
 
 export default {
-  name: 'index-index',
+  name: 'index-category-typeid',
   data() {
     return {};
+  },
+  
+  fetch({ store, route: { path, params } }) {
+    return new Promise(r => {
+      Promise.all([
+        store.dispatch('options/setLayoutPanel', {isLayoutPanel: true}),
+        store.dispatch('global/initQrPage', params),
+      ]).then(r).catch(r);
+    });
   },
 
   components: {
     cardItem,
-    sortSheet
+    sortSheet,
+    breadCrumb,
   },
   computed: {
     isHor() {
       return this.$store.state.global.mainNavIdx !== 0;
     },
     codeList() {
-      console.log('this.$store.state.global.codeList', this.$store.state.global.codeList);
       return this.$store.state.global.codeList.filter(e => e) || [];
     }
   }
@@ -46,13 +59,16 @@ export default {
 .main-page-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 20px 30px 40px;
+}
+.bread-container {
+  max-width: 1080px;
+  padding: 0 10px 20px;
 }
 .lif-list {
   position: relative;
   flex-grow: 1;
   font-size: 0px;
-  margin-bottom: 40px;
 }
 .page-body {
   position: relative;
@@ -71,7 +87,7 @@ export default {
 
 @media screen and (max-width: 768px) {
   .main-page-container {
-    padding: 0 6px;
+    padding: 20px 6px 40px;
   }
   .page-body {
     padding-right: 0;

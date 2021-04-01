@@ -1,7 +1,5 @@
 <template>
     <div>
-        gerenzhongxin -addddds
-
     </div>
 </template>
 

@@ -14,22 +14,12 @@ export default {
   scrollToTop: true,
 
   head: {
-    title: 'WELIAN'
+    title: 'WELINK'
   },
 
   data() {
     return {
-      isHor: true
     };
-  },
-
-  fetch({ store, route: { path } }) {
-    return new Promise(r => {
-      Promise.all([
-        store.dispatch('options/setLayoutPanel', {isLayoutPanel: true}),
-        store.dispatch('global/getQrTypes'),
-      ]).then(r).catch(r);
-    });
   },
 
   mounted() {

@@ -7,6 +7,7 @@
           :options="qrTypes"
           :props="{ expandTrigger: 'hover' }"
           @change="handleTypeChange"
+          @focus="handleTypeFocus"
         ></el-cascader>
       </el-form-item>
       <el-form-item label="名称">
@@ -17,7 +18,7 @@
       </el-form-item>
       <div class="flex-cont">
         <el-form-item label="省份">
-          <el-select v-model="form.province" placeholder="省份" @change="onProvinceChange">
+          <el-select v-model="form.province" placeholder="省份" @change="onProvinceChange" @focus="onProvinceFocus">
             <el-option v-for="item in cityList" :key="item.value" :label="item.label" :value="item.value"> </el-option>
           </el-select>
         </el-form-item>
@@ -115,10 +116,6 @@ export default {
 
   mounted() {
     if (window) {
-      this.$nextTick(() => {
-        this.$store.dispatch('global/getCitiesInfo');
-        this.getQrTypes();
-      });
       this.authToken = Cookies.get('WeLink');
     }
   },
@@ -127,14 +124,19 @@ export default {
       this.provinceIndex = provinceIndex;
       this.form.city = '';
     },
+    onProvinceFocus() {
+      this.$store.dispatch('global/getCitiesInfo');
+    },
     getQrTypes() {
       this.$store.dispatch('global/getQrTypes');
     },
     handleTypeChange(value) {
-      console.log(value);
     },
-    handleUploadSuccess(aa) {
-      console.log('handleAvatarSuccess', aa);
+    handleTypeFocus() {
+      this.getQrTypes();
+    },
+  
+    handleUploadSuccess() {
     },
     beforeUpload(file) {
       console.log(file);
@@ -151,7 +153,6 @@ export default {
       return isJPG && isLt2M;
     },
     uploadFile(file, type) {
-      console.log(type);
       const payload = new FormData();
       payload.append('authToken', Cookies.get('WeLink'));
       payload.append('files', file.file);
@@ -163,12 +164,10 @@ export default {
           if (type === 'avatar') {
             this.form.avatarId = id;
           } else {
-            console.log(this.avatarUrl);
             this.form.qrId = id;
           }
         })
         .catch(error => {
-          console.log('catch', error);
           this.$message({
             type: 'error',
             message: error.message || '上传失败'

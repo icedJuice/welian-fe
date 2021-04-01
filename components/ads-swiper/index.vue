@@ -1,5 +1,5 @@
 <template>
-    <div class="ads-containers">
+    <div class="ads-containers" v-if="aids">
         <div class="ads-list">
             <div class="ads-item">
                 广告
@@ -26,6 +26,12 @@
 <script>
 export default {
     name: 'ads-swiper',
+
+    computed: {
+        aids() {
+            return this.$store.state.global.aids;
+        }
+    }
 }
 </script>
 

@@ -20,6 +20,15 @@ export default {
     return {};
   },
 
+  fetch({ store, route: { path, params } }) {
+    return new Promise(r => {
+      Promise.all([
+        store.dispatch('options/setLayoutPanel', {isLayoutPanel: true}),
+        store.dispatch('global/initQrPage', params),
+      ]).then(r).catch(r);
+    });
+  },
+
   components: {
     cardItem,
   },
@@ -28,7 +37,6 @@ export default {
       return this.$store.state.global.mainNavIdx !== 0;
     },
     codeList() {
-      console.log('this.$store.state.global.codeList', this.$store.state.global.codeList);
       return this.$store.state.global.codeList.filter(e => e) || [];
     }
   }
@@ -39,13 +47,12 @@ export default {
 .main-page-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 30px;
+  padding: 20px 30px 40px;
 }
 .lif-list {
   position: relative;
   flex-grow: 1;
   font-size: 0px;
-  margin-bottom: 40px;
 }
 .page-body {
   position: relative;
@@ -64,7 +71,7 @@ export default {
 
 @media screen and (max-width: 768px) {
   .main-page-container {
-    padding: 0 6px;
+    padding: 20px 6px 40px;
   }
   .page-body {
     padding-right: 0;

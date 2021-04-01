@@ -32,11 +32,11 @@
       <div class="zan-slot">
         <div class="see">
           <i class="icon-see"></i>
-          <span class="num">4987</span>
+          <span class="num">{{item.displays || 0}}</span>
         </div>
         <div class="zan">
           <i class="icon-zan zaned"></i>
-          <span class="num">862</span>
+          <span class="num">{{item.prizes || 0}}</span>
         </div>
       </div>
       <div class="tag" :class="item.typeCategory">
@@ -60,6 +60,9 @@ export default {
 </script>
 
 <style lang="scss">
+.card-item {
+  margin-bottom: 20px;
+}
 .card-item-col {
   display: inline-block;
   max-width: 200px;
@@ -174,6 +177,9 @@ export default {
     margin-top: 20px;
     padding: 20px 30px;
     background-color: #fff;
+    &:first-of-type {
+      margin-top: 0;
+    }
   }
   .qrcode-box {
     display: block;

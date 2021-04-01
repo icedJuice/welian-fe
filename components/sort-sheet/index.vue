@@ -4,13 +4,13 @@
             <h6 class="title">热门频道</h6>
         </div>
         <div class="sort-wrap">
-            <div class="sort-item"
-                v-for="(nav, index) in secNavs"
+            <nuxt-link class="sort-item"
+                v-for="(nav) in navs.children"
                 :key="nav.value"
-                @click="() => onNavClick(index)"
+                :to="`/${navs.value}/${nav.value}`"
             >
                 <span class="sort-item-text">{{nav.label}}</span>
-            </div>
+            </nuxt-link>
         </div>
     </div>
 </template>
@@ -18,23 +18,18 @@
 export default {
     name: 'sort-sheet',
 
-    methods: {
-        onNavClick(index) {
-            const secIdx = this.$store.state.global.mainSecNavIdx;
-            if (secIdx !== index) {
-                this.$store.dispatch('global/onNavClick', { mainSecNavIdx: index });
-            }
-        }
-    },
-
     computed: {
-        secNavs() {
+        navs() {
             const mainNavIdx = this.$store.state.global.mainNavIdx;
             if (mainNavIdx > 0) {
-                return this.$store.state.global.qrTypes[mainNavIdx - 1].children;
+                return this.$store.state.global.qrTypes[mainNavIdx - 1];
             }
-            return []
+            return {
+                value: '/',
+                children: [],
+            }
         },
+       
         mainSecNavIdx() {
         return this.$store.state.global.mainSecNavIdx;
         },

@@ -4,19 +4,15 @@
       <div class="nav-inner">
         <div class="nav-list">
           <div class="nav-slider">
-            <div
+            <nuxt-link
               class="nav-item"
               v-for="(nav, index) in navs"
               :key="nav.value"
               :class="{ active: index === mainNavIdx }"
-              @click="
-                () => {
-                  onNavClick(nav, index);
-                }
-              "
+              :to="`/${nav.value}`"
             >
               <span>{{ nav.label }}</span>
-            </div>
+            </nuxt-link>
           </div>
         </div>
       </div>
@@ -30,11 +26,7 @@
               v-for="(nav, index) in navs[0].children"
               :key="index"
               :class="{ active: index === mainSecNavIdx }"
-              @click="
-                () => {
-                  onSecNavClick(nav, index);
-                }
-              "
+              @click="() => onSecNavClick(nav, index)"
             >
               <span>{{ nav.label }}</span>
             </div>
@@ -49,20 +41,21 @@
 
 const mainTypes = {
   label: '首页',
-  value: 'main',
+  value: '',
   hasSec: true,
   children: [
     {
-      value: 0,
-      label: '推荐'
+      value: '',
+      label: '推荐',
+      href: '/',
     },
     {
-      value: 1,
-      label: '最热'
+      value: 'hot',
+      label: '最热',
     },
     {
-      value: 1,
-      label: '最新'
+      value: 'new',
+      label: '最新',
     }
   ]
 

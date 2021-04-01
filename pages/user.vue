@@ -43,10 +43,10 @@ const routes = [
     name: '二维码列表',
     path: '/user/qrcode'
   },
-  {
-    name: '审核推荐',
-    path: '/user/adds'
-  }
+  // {
+  //   name: '审核推荐',
+  //   path: '/user/adds'
+  // }
 ];
 
 export default {

@@ -1,7 +1,7 @@
 <template>
   <div class="user-sec-page qrcode-page">
     <div class="search-bar">
-      <div class="input-box">
+      <!-- <div class="input-box">
         <input class="input" type="text" v-model="searchValue" />
       </div>
       <div class="btn btn-all" @click="searchAll">
@@ -9,7 +9,7 @@
       </div>
       <div class="btn btn-select" @click="search">
         <span>查询</span>
-      </div>
+      </div> -->
     </div>
 
     <inf-list @loadMore="loadMore" :loading="loading" :done="done">
@@ -29,11 +29,11 @@
               <div class="code-view">
                 <div class="view-item">
                   <i class="icon icon-see"></i>
-                  <span>2379</span>
+                  <span>{{item.displays || 0}}</span>
                 </div>
                 <div class="view-item">
                   <i class="icon icon-zan"></i>
-                  <span>786</span>
+                  <span>{{item.prizes || 0}}</span>
                 </div>
                 <div class="view-item">
                   <span>编号{{item.qrNumber}}</span>
@@ -44,9 +44,9 @@
               </div>
               <div class="func-box">
                 <div class="detail-btn">查看详情</div>
-                <div class="status-btn disable">
-                  <span>已过期</span>
-                </div>
+                <!-- <div class="status-btn disable">
+                  <span>下架期</span>
+                </div> -->
               </div>
             </div>
           </div>
@@ -102,15 +102,12 @@ export default {
       // 0: 未审核
       // 1: 通过
       // 2: 拒绝
-      console.log('this.$store.state.user.userCodeList', this.$store.state.user.userCodeList);
       return this.$store.state.user.userCodeList || [];
     },
     loading() {
-      console.log('this.$store.state.user.loading', this.$store.state.user.loading);
       return this.$store.state.user.loading;
     },
     done() {
-      console.log('this.$store.state.user.done', this.$store.state.user.done);
       return this.$store.state.user.done;
     }
   }
@@ -177,7 +174,6 @@ export default {
 
   .lif-list {
     margin-top: 20px;
-    margin-bottom: 20px;
   }
   .card-item {
     position: relative;

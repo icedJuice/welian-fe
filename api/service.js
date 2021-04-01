@@ -110,13 +110,21 @@ export const createQrCode = POST('/Qr/CreateQrCode');
 */
 export const getQrCodes = GET('/Qr/GetQrCodes');
 
+/***
+ * 首页获取最热接口 
+ * 
+ * 
+ */
+
+export const getHotQrCodes = GET('/Qr/GetHot100QrCodes');
+
 /**
- * 获取首页最热列表
+ * 获取首页最新列表
  * 
  * 
 */
 
-export const getTopQrCodes  = GET('/Qr/GetTopQrCodes');
+export const getTopQrCodes = GET('/Qr/GetTopQrCodes');
 
 /**
  * 获取用户qrcode列表

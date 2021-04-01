@@ -104,7 +104,6 @@ export default {
   },
   computed: {
     codeDetail() {
-      console.log('this.$store.state.global.codeDetail', this.$store.state.global.codeDetail);
       return this.$store.state.global.codeDetail || {};
     }
   }
@@ -112,12 +111,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.bread-container {
+
+.detail-outer {
   max-width: 1080px;
-  padding: 20px 40px 0;
+  
 }
 .detail-page {
   display: flex;
+  padding: 20px 40px 0;
+}
+.bread-container {
   max-width: 1080px;
   padding: 20px 40px 0;
 }
