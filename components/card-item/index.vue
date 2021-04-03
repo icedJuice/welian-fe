@@ -9,11 +9,11 @@
         <div class="act-sheet">
           <div class="see">
             <i class="icon-see"></i>
-            <span class="num">1679</span>
+            <span class="num">{{item.displays || 0}}</span>
           </div>
-          <div class="zan">
+          <div class="zan" :class="{active: zan}"  @click="() => toggleZan(item)">
             <i class="icon-zan"></i>
-            <span class="num">8901</span>
+            <span class="num">{{item.prizes + Number(zan) || 0}}</span>
           </div>
         </div>
         <p class="code-desc">
@@ -53,15 +53,29 @@ export default {
   props: ['isHor', 'item'],
   data() {
     return {
+      zan: false,
+      zaned: false,
     };
   },
-  methods: {}
+  methods: {
+    toggleZan(item) {
+      this.zan = !this.zan;
+      if (this.zaned) {
+        return
+      }
+      this.zaned = true;
+      this.$store.dispatch('global/priseQr', { id: item.id } )
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .card-item {
   margin-bottom: 20px;
+  &:last-of-type {
+    margin-bottom: 0px;
+  }
 }
 .card-item-col {
   display: inline-block;
@@ -196,9 +210,10 @@ export default {
   .info {
     margin-left: 16px;
     max-width: calc(100% - 140px);
+    flex-grow: 1;
     .code-name {
       font-size: 20px;
-      color: #07c160;
+      color: #333333;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -349,6 +364,8 @@ export default {
 @media screen and (max-width: 440px) {
   .card-item-col {
     width: 50%;
+    padding: 0 5px;
+    margin-bottom: 10px;
   }
 }
 </style>

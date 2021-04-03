@@ -84,4 +84,16 @@ export default {
     color: #fff;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .user-sec-page.user-info-page {
+    padding: 20px 16px 40px;
+    .form-item {
+      margin-top: 16px;
+    }
+    .el-input--medium {
+      font-size: 12px;
+    }
+  }
+}
 </style>

@@ -71,9 +71,9 @@ export default {
 
   mounted() {
     if (window) {
-          window.window.addEventListener('pushState', function(e) {
-            console.log('change pushState');
-          });
+          // window.window.addEventListener('pushState', function(e) {
+          //   console.log('change pushState');
+          // });
     }
   },
 
@@ -88,7 +88,6 @@ export default {
     onSecNavClick(nav, index) {
       this.$store.dispatch('global/onNavClick', { mainSecNavIdx: index });
       const path = this.$route.path;
-      console.log('path', path);
       if (path != '/') {
         this.$router.push('/');
       }

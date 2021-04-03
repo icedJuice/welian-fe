@@ -261,5 +261,8 @@ export default {
     width: 160px;
     height: 160px;
   }
+  .bread-container {
+    display: none;
+  }
 }
 </style>

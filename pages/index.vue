@@ -30,7 +30,7 @@ export default {
 
   methods: {
     onNavClick({ nav, secNav }) {
-      console.log({ nav, secNav });
+      // console.log({ nav, secNav });
     }
   },
 

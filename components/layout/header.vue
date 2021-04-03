@@ -2,11 +2,13 @@
   <div class="layout-header-container">
     <div class="header-wrap">
       <div class="header-inner">
-        <div class="left-side">
+        <div class="left-side" :class="{graw: !searchBar}">
           <nuxt-link to="/">
-            <img class="logo" src="~/static/images/logo-blank.png" alt="" />
+            <img class="logo" v-if="searchBar" src="~/static/images/logo-blank.png" alt="" />
+            <i class="logo-icon" v-else></i>
           </nuxt-link>
-          <div class="search-wrap">
+          
+          <div class="search-wrap" v-if="searchBar">
             <div class="input-box">
               <input class="input-search" placeholder="中国人大14次大会" type="text" />
             </div>
@@ -15,6 +17,9 @@
               <span>搜索</span>
             </div>
           </div>
+        </div>
+        <div class="title-text" v-if="!searchBar">
+          {{title}}
         </div>
 
         <div class="auth-wrap">
@@ -34,6 +39,7 @@
           <i class="mask"></i>
           <div class="btn" @click="toggleNav"></div>
           <div class="nav-list">
+            <i class="nav-mask" @click="toggleNav"></i>
             <div class="nav-list-inner">
               <nuxt-link to="/" class="nav-item">
                 <i class="icon icon-back-home"></i>
@@ -62,7 +68,8 @@ export default {
   data() {
     return {
       open: false,
-      pathname: ''
+      pathname: '',
+      title: ''
     };
   },
 
@@ -70,10 +77,35 @@ export default {
     if (window) {
       this.pathname = this.$route.path;
       window.addEventListener('resize', this.listenWidth);
+      this.listenRoute(this.pathname);
+    }
+  },
+
+  watch: {
+    $route(route) {
+      this.open = false;
+      this.currentRoute = route;
+      this.listenRoute(route.path);
     }
   },
 
   methods: {
+
+    listenRoute(_path) {
+      const path = _path || this.$route.path;
+      if (/^\/user/.test(path)) {
+        this.title = '个人中心';
+      } else if(/^\/detail/.test(path)) {
+        this.title = '二维码';
+      } else if (/^\/session/.test(path)) {
+        this.title = '登陆注册';
+      } else {
+        this.title = '';
+      }
+      const showSearch = !/^\/(user|detail|session)/.test(path);
+      this.$store.dispatch('options/setSearchBar', showSearch);
+    },
+
     listenWidth() {
       if (document.documentElement.clientWidth > 640 && this.open) {
         this.open = false;
@@ -100,13 +132,15 @@ export default {
       this.$router.replace(`/session?refer=${encodeURI(this.$route.path)}`);
     },
     jump(path) {
-      console.log('path');
       this.$router.push(path);
     }
   },
   computed: {
     userInfo() {
       return this.$store.state.global.userInfo;
+    },
+    searchBar() {
+      return this.$store.state.options.searchBar;
     }
   }
 };
@@ -142,11 +176,28 @@ export default {
     display: flex;
     align-items: center;
     flex-grow: 1;
+    &.graw {
+      flex-grow: 0;
+    }
   }
   .logo {
     display: block;
     height: 18px;
     width: auto;
+  }
+  .title-text {
+    font-size: 16px;
+    color: #fff;
+    font-weight: 500;
+  }
+  .logo-icon {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url('~assets/icon/icon-main-blank.png');
   }
   .search-wrap {
     display: flex;
@@ -251,9 +302,16 @@ export default {
       left: 0;
       top: var(--height);
       overflow: hidden;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0, 0, 0, 0.4);
     }
-
+    .nav-mask {
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+    }
     .nav-list-inner {
       position: relative;
       padding: 10px 24px;
@@ -301,6 +359,9 @@ export default {
   .layout-header-container {
     --height: 60px;
     --padding: 16px;
+    .title-text {
+      display: block;
+    }
   }
 }
 

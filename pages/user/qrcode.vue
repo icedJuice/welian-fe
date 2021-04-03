@@ -14,50 +14,14 @@
 
     <inf-list @loadMore="loadMore" :loading="loading" :done="done">
       <div class="lif-list">
-        <div class="card-item" v-for="item in userCodeList" :key="item.id">
-          <div class="qrcode-box">
-            <img class="qrcode-img" :src="item.qrImageUrl" alt="" />
-          </div>
-          <div class="qrcode-info">
-            <div class="info-box">
-              <div class="code-title">
-                <h2 class="title">{{item.typeCategoryName}}-{{item.typeName}}: {{item.title}}</h2>
-                <span class="status" v-if="item.state === 0">审核中</span>
-                <span class="status" v-if="item.state === 1">审核通过</span>
-                <span class="status fail" v-if="item.state === 2">被拒绝</span>
-              </div>
-              <div class="code-view">
-                <div class="view-item">
-                  <i class="icon icon-see"></i>
-                  <span>{{item.displays || 0}}</span>
-                </div>
-                <div class="view-item">
-                  <i class="icon icon-zan"></i>
-                  <span>{{item.prizes || 0}}</span>
-                </div>
-                <div class="view-item">
-                  <span>编号{{item.qrNumber}}</span>
-                </div>
-              </div>
-              <div class="code-tag">
-                <span class="tag-item" v-for="label in (item.labels && item.labels.split(/\s+/) || [])" :key="label">{{label}}</span>
-              </div>
-              <div class="func-box">
-                <div class="detail-btn">查看详情</div>
-                <!-- <div class="status-btn disable">
-                  <span>下架期</span>
-                </div> -->
-              </div>
-            </div>
-          </div>
-        </div>
+        <user-item-card  v-for="item in userCodeList" :item="item" :key="item.id"></user-item-card>
       </div>
     </inf-list>
   </div>
 </template>
 
 <script>
-
+import userItemCard from '~/components/user-card-item';
 import infList from '~/components/infList';
 
 export default {
@@ -69,6 +33,7 @@ export default {
   },
   components: {
     infList,
+    userItemCard,
   },
 
   fetch({ store, route: { path } }) {
@@ -92,6 +57,9 @@ export default {
     },
 
     loadMore() {
+      if (this.loading || this.done) {
+        return;
+      }
       this.$store.dispatch('user/getUserCodes');
     }
   },

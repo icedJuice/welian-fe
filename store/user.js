@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie';
-
 import API from '../api';
 // import cloneDeep from 'lodash/cloneDeep';
 import _ from '../utils/underscore';
@@ -27,31 +25,38 @@ export const mutations = {
 };
 
 export const actions = {
-
-    search({ commit, dispatch }, { value = '' } = {}) {
-        commit('SET_STATE', {searchStr: value, userCodeList: [], loading: false, done: 0, currentPage: 1 });
-        dispatch('getUserCodes');
-    },
+  async search({ commit, dispatch }, { value = '' } = {}) {
+    commit('SET_STATE', { searchStr: value, userCodeList: [], loading: false, done: 0, currentPage: 1 });
+    await dispatch('getUserCodes');
+  },
 
   async getUserCodes({ commit, state }, { search } = {}) {
     const { searchStr, userCodeList, loading, done, currentPage } = state;
-    
+
     if (loading || done) {
-        return;
+      return;
     }
 
-    commit('SET_STATE', {loading: true});
+    commit('SET_STATE', { loading: true });
 
     const payload = {
-        currentPage,
-        pageSize: defaultPageSize,
+      currentPage,
+      pageSize: defaultPageSize
     };
     const res = await API.getMyQrCodes(payload);
-    console.log(res);
     const data = res.data;
     const newUserCodeList = [...userCodeList];
     newUserCodeList.splice(defaultPageSize * currentPage, data.length, ...data);
 
-    commit('SET_STATE', { userCodeList: newUserCodeList, loading: false, done: !res.hasNextPage, currentPage: currentPage + 1  });
+    commit('SET_STATE', {
+      userCodeList: newUserCodeList,
+      loading: false,
+      done: !res.hasNextPage,
+      currentPage: currentPage + 1
+    });
   },
+  async publishQr(_, payload) {
+    const res = await API.publishQr(payload);
+    return res;
+  }
 };

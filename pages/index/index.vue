@@ -1,18 +1,21 @@
 <template>
   <div class="main-page-container">
+    <inf-list @loadMore="loadMore" :loading="homePayload.loading" :done="homePayload.done">
     <div class="lif-list">
-      <card-item
-        :isHor="false"
-        v-for="(item, index) in codeList"
-        :key="(item && item.id) || index"
-        :item="item"
-      ></card-item>
-    </div>
+        <card-item
+          :isHor="false"
+          v-for="(item, index) in codeList"
+          :key="(item && item.id) || index"
+          :item="item"
+        ></card-item>
+      </div>
+    </inf-list>
   </div>
 </template>
 
 <script>
 import cardItem from '~/components/card-item';
+import infList from '~/components/infList';
 
 export default {
   name: 'index-index',
@@ -31,6 +34,15 @@ export default {
 
   components: {
     cardItem,
+    infList,
+  },
+  methods: {
+    loadMore() {
+      if (this.homePayload.loading || this.homePayload.done) {
+        return;
+      }
+      this.$store.dispatch('global/getQrCodes');
+    },
   },
   computed: {
     isHor() {
@@ -38,7 +50,10 @@ export default {
     },
     codeList() {
       return this.$store.state.global.codeList.filter(e => e) || [];
-    }
+    },
+    homePayload() {
+      return this.$store.state.global.homePayload;
+    },
   }
 };
 </script>
@@ -53,6 +68,7 @@ export default {
   position: relative;
   flex-grow: 1;
   font-size: 0px;
+  padding-bottom: 20px;
 }
 .page-body {
   position: relative;

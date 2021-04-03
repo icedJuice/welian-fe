@@ -5,6 +5,7 @@ import API from '../api';
 import _ from '../utils/underscore';
 
 const defaultPageSize = 20;
+const defaultHotPageSize = 36;
 
 const defaultHomePayload = {
   currentPage: 1,
@@ -288,12 +289,12 @@ export const actions = {
   // 拉取二维码列表
   async getQrCodes({ state, commit }) {
     const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
-    const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
-
+    const { loading, done, currentPage, category, typeId } = homePayload;
     if (loading || done) {
       return;
     }
-
+    commit('SET_STATE', { homePayload: {...homePayload, loading: true}});
+    const pageSize = mainNavIdx === 0 ? defaultHotPageSize : homePayload.pageSize;
     const payload = {
       pageSize,
       currentPage
@@ -319,7 +320,15 @@ export const actions = {
     const res = await API.getQrCodes(payload);
     const data = res.data;
     const newCodeList = [...codeList];
-    newCodeList.splice(pageSize * currentPage, data.length, ...data);
+    if (mainNavIdx !== 0) {
+      // 将第三个item放上导航
+      if (currentPage === 1) {
+        newCodeList.splice(pageSize * (currentPage - 1), data.length, ...data);
+        newCodeList.splice(2, 0, {isNav: true });
+      } else {
+        newCodeList.splice(pageSize * (currentPage - 1) + 1, data.length, ...data);
+      }
+    }
 
     const newHomePayload = {
       ...homePayload,
@@ -335,36 +344,36 @@ export const actions = {
   },
 
   // 按分类拉列表
-  async getQrCodesByType({ commit, state }) {
-    const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
-    const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
+  // async getQrCodesByType({ commit, state }) {
+  //   const { mainNavIdx, mainSecNavIdx, homePayload, codeList } = state;
+  //   const { loading, done, pageSize, currentPage, category, typeId } = homePayload;
 
-    if (loading || done) {
-      return;
-    }
-    const payload = {
-      pageSize,
-      currentPage,
-      category,
-      typeId
-    };
-    const res = await API.getQrCodes(payload);
-    const data = res.data;
-    const newCodeList = [...codeList];
-    newCodeList.splice(pageSize * currentPage, data.length, ...data);
+  //   if (loading || done) {
+  //     return;
+  //   }
+  //   const payload = {
+  //     pageSize,
+  //     currentPage,
+  //     category,
+  //     typeId
+  //   };
+  //   const res = await API.getQrCodes(payload);
+  //   const data = res.data;
+  //   const newCodeList = [...codeList];
+  //   newCodeList.splice(pageSize * currentPage, data.length, ...data);
 
-    const newHomePayload = {
-      ...homePayload,
-      loading: false,
-      done: !res.hasNextPage,
-      currentPage: currentPage + 1
-    };
+  //   const newHomePayload = {
+  //     ...homePayload,
+  //     loading: false,
+  //     done: !res.hasNextPage,
+  //     currentPage: currentPage + 1
+  //   };
 
-    commit('SET_STATE', {
-      codeList: newCodeList,
-      homePayload: newHomePayload
-    });
-  },
+  //   commit('SET_STATE', {
+  //     codeList: newCodeList,
+  //     homePayload: newHomePayload
+  //   });
+  // },
 
   async getQrDetail({ state, commit, dispatch }, payload) {
     try {

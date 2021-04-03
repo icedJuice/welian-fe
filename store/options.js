@@ -15,6 +15,9 @@ export const state = () => {
     // 是否有顶部通栏
     isLayoutPanel: true,
 
+    // 搜索栏
+    searchBar: true,
+
     // 错误页面
     isError: false,
 
@@ -101,5 +104,9 @@ export const actions = {
 
   async updateState({ commit }, data) {
     commit('SET_STATE', data);
+  },
+
+  async setSearchBar({ commit }, searchBar) {
+    commit('SET_STATE', { searchBar });
   }
 };

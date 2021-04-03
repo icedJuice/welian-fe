@@ -139,7 +139,6 @@ export default {
     handleUploadSuccess() {
     },
     beforeUpload(file) {
-      console.log(file);
       const accept = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
       const isJPG = accept.findIndex(e => e === file.type) >= 0;
       const isLt2M = file.size / 1024 / 1024 < 2;
@@ -191,7 +190,6 @@ export default {
       };
     },
     submit() {
-      console.log(this.form);
       const { typeId, title, description, province, city, qrId, avatarId } = this.form;
       let message = '';
       if (isEmpty(typeId)) {
@@ -225,7 +223,6 @@ export default {
       this.$store
         .dispatch('global/createQrCode', payload)
         .then(res => {
-          console.log('create', res);
           this.$message({
             type: 'success',
             message: '提交成功'
@@ -251,7 +248,6 @@ export default {
       return this.$store.state.global.cityList || [];
     },
     qrTypes() {
-      console.log(this.$store.state.global.qrTypes);
       return this.$store.state.global.qrTypes || [];
     }
   }
@@ -344,5 +340,34 @@ export default {
 .el-cascader-node.is-active,
 .el-cascader-node.is-selectable.in-checked-path {
   color: #07c160;
+}
+@media screen and (max-width: 768px) {
+  .user-sec-page.publish-page {
+    padding: 20px 16px 40px 0;
+    .form-item {
+      margin-top: 16px;
+    }
+    .el-input--medium {
+      font-size: 12px;
+    }
+    .el-form-item--small .el-form-item__label {
+      width: 56px !important;
+      padding-left: 16px;
+      padding-right: 0;
+      justify-content: flex-start;
+      white-space: nowrap;
+    }
+    .el-form-item__content {
+      margin-left: 60px!important;
+    }
+    .avatar-uploader {
+      width: 90px;
+      height: 90px;
+    }
+    .submit-btn {
+      margin-left: 60px;
+    }
+  }
+  
 }
 </style>

@@ -158,3 +158,11 @@ export const displayCode = POST('/Qr/DisplayQr');
 export const priseQr = POST('/Qr/PriseQr');
 
 
+/**
+ * 发布/取消发布 二维码
+ * id: id"
+  "isPublished": true,
+ * 
+*/
+export const publishQr = POST('/Qr/PublishQr');
+

@@ -11,7 +11,6 @@ body {
   &.disable-scroll {
     overflow: hidden;
   }
-  background-color: #f8f8f8;
 }
 
 @supports(width: constant(safe-area-inset-bottom)) {

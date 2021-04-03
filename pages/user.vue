@@ -143,4 +143,37 @@ export default {
   border-bottom: 1px solid #eeeeee;
   background-color: #fff;
 }
+
+@media screen and (max-width: 768px) {
+  .user-page {
+    padding: 0 0 50px;
+    flex-direction: column;
+  }
+  .user-nav {
+    padding: 0;
+    margin: 0;
+  }
+  .left-side {
+    width: unset;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+  }
+  .page-title {
+    display: none;
+  }
+  .nav-wrap {
+    display: flex;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.05);
+    z-index: 1;
+    position: relative;
+  }
+  .nav-item{
+    padding: 10px 14px 10px 16px;
+    &.active {
+      background-color: #fff;
+      color: #07c160;
+    }
+  }
+}
 </style>
